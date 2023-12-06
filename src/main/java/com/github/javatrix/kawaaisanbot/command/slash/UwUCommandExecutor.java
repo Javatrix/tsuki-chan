@@ -1,20 +1,17 @@
-package com.github.javatrix.kawaaisanbot.command;
+package com.github.javatrix.kawaaisanbot.command.slash;
 
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-public class UwUCommand extends Command {
+public class UwUCommandExecutor implements SlashCommandExecutor {
 
-    private static final OptionData SAY_UWU_OPTION = new OptionData(OptionType.BOOLEAN, "say_uwu", "Whether to say UwU or not.");
-
-    public UwUCommand() {
-        super("uwu", "Says UwU or not, depending on the option chosen.", SAY_UWU_OPTION);
-    }
+    public static final OptionData SAY_UWU_OPTION = new OptionData(OptionType.BOOLEAN, "say_uwu", "Whether to say UwU or not.");
 
     @Override
-    public void execute(SlashCommandInteractionEvent context) {
+    public void process(SlashCommandInteractionEvent context) {
         OptionMapping uwuOption = context.getOption(SAY_UWU_OPTION.getName());
         boolean sayUwU = false;
         if (uwuOption != null) {

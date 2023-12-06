@@ -1,10 +1,9 @@
 package com.github.javatrix.kawaaisanbot;
 
-import com.github.javatrix.kawaaisanbot.command.Command;
-import com.github.javatrix.kawaaisanbot.command.UwUCommand;
+import com.github.javatrix.kawaaisanbot.command.CommandHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.SelfUser;
 
 import java.io.IOException;
@@ -16,8 +15,6 @@ public class KawaiiSan {
     private static final String TOKEN;
     private static KawaiiSan instance;
 
-    private JDA api;
-
     static {
         try {
             TOKEN = Files.readString(Path.of("secrets/token"));
@@ -26,11 +23,13 @@ public class KawaiiSan {
         }
     }
 
+    private JDA api;
+
     public void start() {
         instance = this;
         api = JDABuilder.createDefault(TOKEN).build();
-        api.getPresence().setPresence(OnlineStatus.ONLINE, false);
-        new UwUCommand();
+        api.getPresence().setPresence(Activity.playing("/help for help <3"), false);
+        new CommandHandler(api);
     }
 
     public static KawaiiSan getInstance() {
