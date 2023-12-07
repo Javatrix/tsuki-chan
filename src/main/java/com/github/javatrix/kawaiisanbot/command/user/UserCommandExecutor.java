@@ -1,4 +1,4 @@
-package com.github.javatrix.kawaaisanbot.command.user;
+package com.github.javatrix.kawaiisanbot.command.user;
 
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 

@@ -1,6 +1,5 @@
-package com.github.javatrix.kawaaisanbot.command.slash;
+package com.github.javatrix.kawaiisanbot.command.slash;
 
-import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;

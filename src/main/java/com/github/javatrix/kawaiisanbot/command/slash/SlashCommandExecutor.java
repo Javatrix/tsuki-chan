@@ -1,4 +1,4 @@
-package com.github.javatrix.kawaaisanbot.command.slash;
+package com.github.javatrix.kawaiisanbot.command.slash;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
