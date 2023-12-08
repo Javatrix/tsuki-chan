@@ -27,7 +27,7 @@ public class HugCommandExecutor implements UserCommandExecutor {
                 String content = message.getContentRaw();
                 int amount = Integer.parseInt(content.split(" ")[0]);
                 message.editMessage((amount + 1) + content.replaceFirst(String.valueOf(amount), "")).queue();
-                event.reply("Hug sent!").queue();
+                event.reply(String.format("Hug sent by %s!", event.getUser().getEffectiveName())).queue();
             }
         });
     }
