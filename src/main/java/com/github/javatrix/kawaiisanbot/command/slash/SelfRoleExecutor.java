@@ -73,7 +73,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
             Emoji emoji = emojis.get(context.getMember()).get(role);
             response.append("\t").append(role.getName()).append(" ").append(emoji == null ? "" : emoji.getName()).append("\n");
         }
-        context.getUser().openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage((response.toString())).queue());
+        context.reply(response.toString()).queue();
     }
 
     private void sendRoles(SlashCommandInteractionEvent context) {
