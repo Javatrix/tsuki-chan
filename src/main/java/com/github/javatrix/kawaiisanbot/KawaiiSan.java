@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.SelfUser;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -22,7 +21,7 @@ public class KawaiiSan {
 
     static {
         try {
-            TOKEN = Files.readString(Path.of("secrets/token"));
+            TOKEN = Files.readString(Path.of("./secrets/token")).replace("\n", "").replace("\t", "").replace(" ", "");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -30,7 +29,7 @@ public class KawaiiSan {
 
     private JDA api;
 
-    public void start() throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException, ClassNotFoundException {
+    public void start() {
         instance = this;
         api = JDABuilder.createDefault(TOKEN).build();
         api.getPresence().setPresence(Activity.playing("/help for help <3"), false);
@@ -58,7 +57,7 @@ public class KawaiiSan {
         return guild.getRoles().stream().filter(role -> guild.getMembersWithRoles(role).contains(guild.getMember(getUser()))).toList();
     }
 
-    public static void main(String[] args) throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException, ClassNotFoundException {
+    public static void main(String[] args) {
         new KawaiiSan().start();
     }
 }

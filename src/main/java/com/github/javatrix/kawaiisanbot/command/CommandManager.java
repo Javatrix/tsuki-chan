@@ -1,5 +1,6 @@
 package com.github.javatrix.kawaiisanbot.command;
 
+import com.github.javatrix.kawaiisanbot.command.slash.ClearChannelExecutor;
 import com.github.javatrix.kawaiisanbot.command.slash.SelfRoleExecutor;
 import com.github.javatrix.kawaiisanbot.command.slash.SlashCommandExecutor;
 import com.github.javatrix.kawaiisanbot.command.slash.UwUCommandExecutor;
@@ -7,11 +8,9 @@ import com.github.javatrix.kawaiisanbot.command.user.HugCommandExecutor;
 import com.github.javatrix.kawaiisanbot.command.user.UserCommandExecutor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.UserContextInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -36,11 +35,15 @@ public class CommandManager extends ListenerAdapter {
                         .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_ROLES))
                         .addSubcommands(
                                 new SubcommandData("add", "Add a role to the message that's gonna be sent.")
-                                        .addOptions(new OptionData(OptionType.ROLE, "role", "Adds a role to the message.", true)),
+                                        .addOptions(new OptionData(OptionType.ROLE, "role", "Adds a role to the message.", true),
+                                                new OptionData(OptionType.STRING, "emoji", "Emoji that will be displayed on the button.")),
                                 new SubcommandData("remove", "Removes a role to the message that's gonna be sent.")
                                         .addOptions(new OptionData(OptionType.ROLE, "role", "Removes a role to the message.", true)),
+                                new SubcommandData("list", "Lists all of your currently selected roles."),
                                 new SubcommandData("send", "Send the message with selected roles.")
-                        )
+                        ),
+                Commands.slash("clear", "Deletes all messages in the specific channel.")
+                        .setDefaultPermissions(DefaultMemberPermissions.enabledFor(Permission.MANAGE_CHANNEL))
         ).addCommands(
                 //Context menu commands
                 Commands.user("Hug")
@@ -48,6 +51,7 @@ public class CommandManager extends ListenerAdapter {
 
         slashExecutors.put("uwu", new UwUCommandExecutor());
         slashExecutors.put("selfrole", new SelfRoleExecutor());
+        slashExecutors.put("clear", new ClearChannelExecutor());
 
         userExecutors.put("Hug", new HugCommandExecutor());
 
