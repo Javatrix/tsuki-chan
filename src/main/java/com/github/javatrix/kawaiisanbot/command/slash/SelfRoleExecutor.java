@@ -33,7 +33,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
                 return;
             }
             event.getGuild().addRoleToMember(event.getMember(), role).queue();
-            event.reply("Assigned the role!").queue();
+            event.reply("Assigned the role!").setEphemeral(true).queue();
         });
     }
 
