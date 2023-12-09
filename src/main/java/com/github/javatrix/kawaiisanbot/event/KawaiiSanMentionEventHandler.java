@@ -3,7 +3,7 @@ package com.github.javatrix.kawaiisanbot.event;
 import com.github.javatrix.kawaiisanbot.KawaiiSan;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class KawaiiSanMentionEventHandler extends EventHandler {
+public class KawaiiSanMentionEventHandler extends KawaiiSanEventHandler {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
