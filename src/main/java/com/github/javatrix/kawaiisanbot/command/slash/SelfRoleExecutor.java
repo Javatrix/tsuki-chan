@@ -32,8 +32,15 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
             if (role == null) {
                 return;
             }
-            event.getGuild().addRoleToMember(event.getMember(), role).queue();
-            event.reply("Assigned the role!").setEphemeral(true).queue();
+            String response;
+            if (event.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
+                event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
+                response = "The role was removed!";
+            } else {
+                event.getGuild().addRoleToMember(event.getMember(), role).queue();
+                response = "Added the role!";
+            }
+            event.reply(response).setEphemeral(true).queue();
         });
     }
 
