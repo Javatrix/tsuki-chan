@@ -6,12 +6,21 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.LayoutComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.selections.StringSelectMenu;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 
 public class ClearChannelExecutor implements SlashCommandExecutor {
 
     public ClearChannelExecutor() {
-        KawaiiSanButtonListener.register("clear_channel", (ButtonInteractionEvent event) -> clearChannel(event.getChannel()));
+        KawaiiSanButtonListener.register("clear_channel", (ButtonInteractionEvent event) -> {
+            event.reply("Deleting!").setEphemeral(true).queue();
+            clearChannel(event.getChannel());
+        });
         KawaiiSanButtonListener.register("abort_clear_channel", (ButtonInteractionEvent event) -> {
             event.reply("Ok, aborting action.").setEphemeral(true).queue();
             event.getMessage().delete().queue();

@@ -1,11 +1,11 @@
 package com.github.javatrix.kawaiisanbot.event.button;
 
 import com.github.javatrix.kawaiisanbot.KawaiiSan;
-import com.github.javatrix.kawaiisanbot.event.KawaiiSanEventHandler;
+import com.github.javatrix.kawaiisanbot.event.KawaiiSanEventListener;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class KawaiiSanButtonListener extends KawaiiSanEventHandler {
+public class KawaiiSanButtonListener extends KawaiiSanEventListener {
 
     private String buttonId;
     private final ButtonInteractionRunnable buttonInteractionRunnable;
