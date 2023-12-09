@@ -21,7 +21,7 @@ public class KawaiiSan {
     public void start() {
         instance = this;
         api = JDABuilder.createDefault(TOKEN).build();
-        api.getPresence().setPresence(Activity.playing("/help for help <3"), false);
+        api.getPresence().setPresence(Activity.playing("Still in development! <3"), false);
         new CommandManager(api);
         initEvents();
     }

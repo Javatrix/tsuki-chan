@@ -23,7 +23,12 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     public SelfRoleExecutor() {
         KawaiiSanButtonListener.register((ButtonInteractionEvent event) -> {
-            Role role = event.getGuild().getRoleById(event.getComponentId());
+            Role role;
+            try {
+                role = event.getGuild().getRoleById(event.getComponentId());
+            } catch (NumberFormatException e) {
+                return;
+            }
             if (role == null) {
                 return;
             }
@@ -43,7 +48,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
     }
 
     private void removeRole(SlashCommandInteractionEvent context) {
-        if (roles.get(context.getMember()) == null) {
+        if (roles.get(context.getMember()) == null || roles.get(context.getMember()).isEmpty()) {
             context.reply("You don't have any roles selected. Add them with /selfrole add @Role.").queue();
             return;
         }
@@ -53,17 +58,15 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     private void addRole(SlashCommandInteractionEvent context) {
         Role role = context.getOption("role").getAsRole();
-        int botPermissionLevel = -1;
-        for (Role r : KawaiiSan.getInstance().getAssignedRoles(context.getGuild())) {
-            botPermissionLevel = Math.max(botPermissionLevel, r.getPosition());
-        }
-        if (botPermissionLevel <= role.getPosition()) {
+        if (!canAssignRole(role)) {
             context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy. :sweat:").queue();
             return;
         }
         roles.computeIfAbsent(context.getMember(), k -> new HashSet<>());
         emojis.computeIfAbsent(context.getMember(), k -> new HashMap<>());
+
         roles.get(context.getMember()).add(role);
+
         OptionMapping emoji = context.getOption("emoji");
         if (emoji != null) {
             emojis.get(context.getMember()).put(role, Emoji.fromUnicode(emoji.getAsString()));
@@ -87,7 +90,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
     }
 
     private void sendRoles(SlashCommandInteractionEvent context) {
-        ReplyCallbackAction reply = context.reply("Click buttons below to add a role!");
+        ReplyCallbackAction reply = context.reply("Click buttons below to add roles!");
         Set<Role> roleSet = roles.get(context.getMember());
         if (roleSet == null || roleSet.isEmpty()) {
             context.reply("You didn't provide any roles to add. Use /selfrole add @Role to add roles.").queue();
@@ -99,5 +102,13 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
         }
         reply.queue();
         roles.get(context.getMember()).clear();
+    }
+
+    private boolean canAssignRole(Role role) {
+        int maxPermissionLevel = -1;
+        for (Role r : KawaiiSan.getInstance().getAssignedRoles(role.getGuild())) {
+            maxPermissionLevel = Math.max(maxPermissionLevel, r.getPosition());
+        }
+        return maxPermissionLevel > role.getPosition();
     }
 }
