@@ -13,7 +13,7 @@ public class ClearChannelExecutor implements SlashCommandExecutor {
     public ClearChannelExecutor() {
         KawaiiSanButtonListener.register("clear_channel", (ButtonInteractionEvent event) -> clearChannel(event.getChannel()));
         KawaiiSanButtonListener.register("abort_clear_channel", (ButtonInteractionEvent event) -> {
-            event.reply("Ok, aborting action.").queue();
+            event.reply("Ok, aborting action.").setEphemeral(true).queue();
             event.getMessage().delete().queue();
         });
     }
@@ -25,7 +25,7 @@ public class ClearChannelExecutor implements SlashCommandExecutor {
                         Button.danger("clear_channel", "Yes, do it!").withEmoji(Emoji.fromUnicode("⚠")),
                         Button.primary("abort_clear_channel", "No, abort!")
                 )
-                .queue();
+                .setEphemeral(true).queue();
     }
 
     private void clearChannel(MessageChannelUnion channel) {

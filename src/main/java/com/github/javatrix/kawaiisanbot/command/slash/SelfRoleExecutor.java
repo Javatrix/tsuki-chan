@@ -49,17 +49,17 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     private void removeRole(SlashCommandInteractionEvent context) {
         if (roles.get(context.getMember()) == null || roles.get(context.getMember()).isEmpty()) {
-            context.reply("You don't have any roles selected. Add them with /selfrole add @Role.").queue();
+            context.reply("You don't have any roles selected. Add them with /selfrole add @Role.").setEphemeral(true).queue();
             return;
         }
         roles.get(context.getMember()).remove(context.getOption("role").getAsRole());
-        context.reply("Role removed from your selection!").queue();
+        context.reply("Role removed from your selection!").setEphemeral(true).queue();
     }
 
     private void addRole(SlashCommandInteractionEvent context) {
         Role role = context.getOption("role").getAsRole();
         if (!canAssignRole(role)) {
-            context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy. :sweat:").queue();
+            context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy. :sweat:").setEphemeral(true).queue();
             return;
         }
         roles.computeIfAbsent(context.getMember(), k -> new HashSet<>());
@@ -71,13 +71,13 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
         if (emoji != null) {
             emojis.get(context.getMember()).put(role, Emoji.fromUnicode(emoji.getAsString()));
         }
-        context.reply("Role added to your selection!").queue();
+        context.reply("Role added to your selection!").setEphemeral(true).queue();
     }
 
     private void listRoles(SlashCommandInteractionEvent context) {
         Set<Role> roleSet = roles.get(context.getMember());
         if (roleSet == null || roleSet.isEmpty()) {
-            context.reply("You have not selected any roles! Use /selfrole add to add them.").queue();
+            context.reply("You have not selected any roles! Use /selfrole add to add them.").setEphemeral(true).queue();
             return;
         }
 
@@ -86,7 +86,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
             Emoji emoji = emojis.get(context.getMember()).get(role);
             response.append("\t").append(role.getName()).append(" ").append(emoji == null ? "" : emoji.getName()).append("\n");
         }
-        context.reply(response.toString()).queue();
+        context.reply(response.toString()).setEphemeral(true).queue();
     }
 
     private void sendRoles(SlashCommandInteractionEvent context) {
