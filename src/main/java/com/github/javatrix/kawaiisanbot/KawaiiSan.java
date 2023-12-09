@@ -9,23 +9,12 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.SelfUser;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 public class KawaiiSan {
 
-    private static final String TOKEN;
+    private static final String TOKEN = System.getenv("KAWAII_SAN_TOKEN");
     private static KawaiiSan instance;
-
-    static {
-        try {
-            TOKEN = Files.readString(Path.of("./secrets/token")).replace("\n", "").replace("\t", "").replace(" ", "");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     private JDA api;
 

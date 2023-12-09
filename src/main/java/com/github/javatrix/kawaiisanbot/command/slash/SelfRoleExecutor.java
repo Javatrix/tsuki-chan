@@ -1,16 +1,15 @@
 package com.github.javatrix.kawaiisanbot.command.slash;
 
 import com.github.javatrix.kawaiisanbot.KawaiiSan;
+import com.github.javatrix.kawaiisanbot.event.button.KawaiiSanButtonListener;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +20,17 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     private static final Map<Member, Set<Role>> roles = new HashMap<>();
     private static final Map<Member, Map<Role, Emoji>> emojis = new HashMap<>();
+
+    public SelfRoleExecutor() {
+        KawaiiSanButtonListener.register((ButtonInteractionEvent event) -> {
+            Role role = event.getGuild().getRoleById(event.getComponentId());
+            if (role == null) {
+                return;
+            }
+            event.getGuild().addRoleToMember(event.getMember(), role).queue();
+            event.reply("Assigned the role!").queue();
+        });
+    }
 
     @Override
     public void process(SlashCommandInteractionEvent context) {
@@ -87,19 +97,6 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
             Emoji emoji = emojis.get(context.getMember()).get(role);
             reply.addActionRow(Button.primary(role.getId(), role.getName()).withEmoji(Emoji.fromFormatted(emoji.getFormatted())));
         }
-        context.getJDA().addEventListener(new ListenerAdapter() {
-            @Override
-            public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-                if (event.getMessage().getAuthor().equals(KawaiiSan.getInstance().getUser())) {
-                    Role role = event.getGuild().getRoleById(event.getComponentId());
-                    if (role == null) {
-                        return;
-                    }
-                    event.getGuild().addRoleToMember(event.getMember(), role).queue();
-                    event.reply("Assigned the role!").queue();
-                }
-            }
-        });
         reply.queue();
         roles.get(context.getMember()).clear();
     }
