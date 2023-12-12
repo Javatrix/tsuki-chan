@@ -2,6 +2,7 @@ package com.github.javatrix.kawaiisanbot.command.slash;
 
 import com.github.javatrix.kawaiisanbot.KawaiiSan;
 import com.github.javatrix.kawaiisanbot.event.button.KawaiiSanButtonListener;
+import com.github.javatrix.kawaiisanbot.util.RoleUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -33,7 +34,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
                 return;
             }
             String response;
-            if (event.getGuild().getMembersWithRoles(role).contains(event.getMember())) {
+            if (event.getMember().getRoles().contains(role)) {
                 event.getGuild().removeRoleFromMember(event.getMember(), role).queue();
                 response = "The role was removed!";
             } else {
@@ -65,7 +66,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     private void addRole(SlashCommandInteractionEvent context) {
         Role role = context.getOption("role").getAsRole();
-        if (!canAssignRole(role)) {
+        if (!RoleUtils.canAssignRole(context.getMember(), role)) {
             context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy. :sweat:").setEphemeral(true).queue();
             return;
         }
@@ -111,11 +112,4 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
         roles.get(context.getMember()).clear();
     }
 
-    private boolean canAssignRole(Role role) {
-        int maxPermissionLevel = -1;
-        for (Role r : KawaiiSan.getInstance().getAssignedRoles(role.getGuild())) {
-            maxPermissionLevel = Math.max(maxPermissionLevel, r.getPosition());
-        }
-        return maxPermissionLevel > role.getPosition();
-    }
 }

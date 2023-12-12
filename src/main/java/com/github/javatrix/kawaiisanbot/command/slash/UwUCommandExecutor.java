@@ -12,7 +12,7 @@ public class UwUCommandExecutor implements SlashCommandExecutor {
     @Override
     public void process(SlashCommandInteractionEvent context) {
         OptionMapping uwuOption = context.getOption(SAY_UWU_OPTION.getName());
-        boolean sayUwU = false;
+        boolean sayUwU = true;
         if (uwuOption != null) {
             sayUwU = uwuOption.getAsBoolean();
         }

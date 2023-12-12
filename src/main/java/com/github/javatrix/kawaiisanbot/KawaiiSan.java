@@ -20,10 +20,10 @@ public class KawaiiSan {
 
     private JDA api;
 
-    public void start() throws IOException {
+    public void start() {
         instance = this;
         api = JDABuilder.createDefault(TOKEN).build();
-        api.getPresence().setPresence(Activity.playing("Still in development! <3"), false);
+        api.getPresence().setActivity(Activity.playing("Still in development! <3"));
         new CommandManager(api);
         initEvents();
     }
@@ -65,11 +65,15 @@ public class KawaiiSan {
         return api.getSelfUser();
     }
 
-    public List<Role> getAssignedRoles(Guild guild) {
-        return guild.getRoles().stream().filter(role -> guild.getMembersWithRoles(role).contains(guild.getMember(getUser()))).toList();
+    public Member asMember(Guild guild) {
+        Member member = guild.getMember(getUser());
+        if (member == null) {
+            throw new IllegalStateException("The bot is not present in the specified guild: " + guild);
+        }
+        return member;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new KawaiiSan().start();
     }
 }
