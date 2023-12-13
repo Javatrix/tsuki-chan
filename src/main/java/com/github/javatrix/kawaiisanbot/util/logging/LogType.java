@@ -1,8 +1,19 @@
 package com.github.javatrix.kawaiisanbot.util.logging;
 
 public enum LogType {
-    INFO,
-    WARNING,
-    ERROR,
-    DEBUG
+    INFO(TerminalColor.BLUE),
+    WARNING(TerminalColor.YELLOW_BRIGHT),
+    ERROR(TerminalColor.RED_BRIGHT),
+    DEBUG(TerminalColor.GREEN_BRIGHT);
+
+    private final TerminalColor color;
+
+    LogType(TerminalColor color) {
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return color + super.toString();
+    }
 }

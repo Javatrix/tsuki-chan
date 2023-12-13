@@ -1,5 +1,6 @@
 package com.github.javatrix.kawaiisanbot.command;
 
+import com.github.javatrix.kawaiisanbot.KawaiiSan;
 import com.github.javatrix.kawaiisanbot.command.slash.ClearChannelExecutor;
 import com.github.javatrix.kawaiisanbot.command.slash.SelfRoleExecutor;
 import com.github.javatrix.kawaiisanbot.command.slash.SlashCommandExecutor;
@@ -49,10 +50,12 @@ public class CommandManager extends ListenerAdapter {
                 Commands.user("Hug")
         ).queue();
 
+        KawaiiSan.getInstance().getLogger().info("Creating slash executors...");
         slashExecutors.put("uwu", new UwUCommandExecutor());
         slashExecutors.put("selfrole", new SelfRoleExecutor());
         slashExecutors.put("clear", new ClearChannelExecutor());
 
+        KawaiiSan.getInstance().getLogger().info("Creating context menu executors...");
         userExecutors.put("Hug", new HugCommandExecutor());
 
         api.addEventListener(this);
@@ -60,6 +63,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+        KawaiiSan.getInstance().getLogger().debug("Slash command: " + event.getInteraction());
         SlashCommandExecutor executor = slashExecutors.get(event.getName());
         if (executor == null) {
             event.reply("Sorry, it seems like the handler responsible for processing this command is not registered.Please report this issue to devs as soon as possible.").queue();

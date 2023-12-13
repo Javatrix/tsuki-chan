@@ -1,14 +1,28 @@
 package com.github.javatrix.kawaiisanbot.util.logging;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.github.javatrix.kawaiisanbot.util.logging.TerminalColor.*;
 
 public class Logger {
 
     private String name;
     private String logPattern = "[{name} {hour}:{minute}:{second}]({type}): {message}";
+    private final Map<LogType, Boolean> disabled = new HashMap<>();
+    private final Map<LogParameters, TerminalColor> colors = new HashMap<>();
 
     public Logger(String name) {
         this.name = name;
+        setDisabled(LogType.DEBUG, true);
+
+        setColor(LogParameters.MESSAGE, WHITE_BRIGHT);
+        setColor(LogParameters.TYPE, WHITE_BRIGHT);
+        setColor(LogParameters.NAME, MAGENTA_BRIGHT);
+        setColor(LogParameters.HOUR, RED_BRIGHT);
+        setColor(LogParameters.MINUTE, RED_BRIGHT);
+        setColor(LogParameters.SECOND, RED_BRIGHT);
     }
 
     public void info(String message) {
@@ -28,6 +42,9 @@ public class Logger {
     }
 
     public void log(LogType type, String message) {
+        if (isDisabled(type)) {
+            return;
+        }
         System.out.println(format(type, message));
     }
 
@@ -36,12 +53,28 @@ public class Logger {
         String minute = String.valueOf(Calendar.getInstance().get(Calendar.MINUTE));
         String second = String.valueOf(Calendar.getInstance().get(Calendar.SECOND));
         return logPattern
-                .replace(Parameters.MESSAGE, message)
-                .replace(Parameters.NAME, name)
-                .replace(Parameters.TYPE, type.name())
-                .replace(Parameters.HOUR, hour)
-                .replace(Parameters.MINUTE, minute)
-                .replace(Parameters.SECOND, second);
+                .replace(LogParameters.MESSAGE.toString(), colors.get(LogParameters.MESSAGE) + message + RESET)
+                .replace(LogParameters.NAME.toString(), colors.get(LogParameters.NAME) + name + RESET)
+                .replace(LogParameters.TYPE.toString(), colors.get(LogParameters.TYPE) + type.toString() + RESET)
+                .replace(LogParameters.HOUR.toString(), colors.get(LogParameters.HOUR) + hour + RESET)
+                .replace(LogParameters.MINUTE.toString(), colors.get(LogParameters.MINUTE) + minute + RESET)
+                .replace(LogParameters.SECOND.toString(), colors.get(LogParameters.SECOND) + second + RESET);
+    }
+
+    public boolean isDisabled(LogType type) {
+        return disabled.get(type) != null && disabled.get(type);
+    }
+
+    public void setDisabled(LogType type, boolean disabled) {
+        this.disabled.put(type, disabled);
+    }
+
+    public void setColor(LogParameters parameter, TerminalColor terminalColor) {
+        colors.put(parameter, terminalColor);
+    }
+
+    public TerminalColor getColor(LogParameters parameter) {
+        return colors.get(parameter);
     }
 
     public String getName() {
@@ -60,13 +93,18 @@ public class Logger {
         this.logPattern = logPattern;
     }
 
-    public static final class Parameters {
-        public static final String NAME = "{name}";
-        public static final String HOUR = "{hour}";
-        public static final String MINUTE = "{minute}";
-        public static final String SECOND = "{second}";
-        public static final String TYPE = "{type}";
-        public static final String MESSAGE = "{message}";
+    public enum LogParameters {
+        NAME,
+        HOUR,
+        MINUTE,
+        SECOND,
+        TYPE,
+        MESSAGE;
+
+        @Override
+        public String toString() {
+            return "{" + name().toLowerCase() + "}";
+        }
     }
 
 }

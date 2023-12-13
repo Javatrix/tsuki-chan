@@ -2,18 +2,16 @@ package com.github.javatrix.kawaiisanbot;
 
 import com.github.javatrix.kawaiisanbot.command.CommandManager;
 import com.github.javatrix.kawaiisanbot.event.KawaiiSanMentionEventListener;
+import com.github.javatrix.kawaiisanbot.util.logging.LogType;
 import com.github.javatrix.kawaiisanbot.util.logging.Logger;
+import com.github.javatrix.kawaiisanbot.util.logging.TerminalColor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class KawaiiSan {
 
@@ -23,11 +21,18 @@ public class KawaiiSan {
     private JDA api;
     private final Logger logger = new Logger("Kawaii-San");
 
-    public void start() {
+    public void start(boolean debug) {
+        logger.info("Starting {name}...");
+        logger.setColor(Logger.LogParameters.MESSAGE, TerminalColor.YELLOW_BRIGHT);
+        logger.setDisabled(LogType.DEBUG, false);
+        logger.debug("Test debug.");
         instance = this;
+        logger.info("Loading JDA...");
         api = JDABuilder.createDefault(TOKEN).build();
         api.getPresence().setActivity(Activity.playing("Still in development! <3"));
+        logger.info("Initializing commands.");
         new CommandManager(api);
+        logger.info("Initializing events.");
         initEvents();
     }
 
@@ -36,7 +41,11 @@ public class KawaiiSan {
         new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                pickRandomAvatar();
+                try {
+                    pickRandomAvatar();
+                } catch (Exception e) {
+                    logger.error("Error changing avatar: " + e);
+                }
             }
         }, 0, 120000);
     }
@@ -52,7 +61,7 @@ public class KawaiiSan {
             Icon avatar = Icon.from(icons.get((int) (Math.random() * icons.size())));
             KawaiiSan.getInstance().getUser().getManager().setAvatar(avatar).queue();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            logger.error("Loading avatar file failed: " + e);
         }
     }
 
@@ -76,7 +85,11 @@ public class KawaiiSan {
         return member;
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
+
     public static void main(String[] args) {
-        new KawaiiSan().start();
+        new KawaiiSan().start(args.length != 0 && args[0].equals("debug"));
     }
 }
