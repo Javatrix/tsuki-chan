@@ -66,8 +66,8 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     private void addRole(SlashCommandInteractionEvent context) {
         Role role = context.getOption("role").getAsRole();
-        if (!RoleUtils.canAssignRole(context.getMember(), role)) {
-            context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy. :sweat:").setEphemeral(true).queue();
+        if (!RoleUtils.canAssignRole(KawaiiSan.getInstance().asMember(context.getGuild()), role)) {
+            context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy.\n## :sweat:").setEphemeral(true).queue();
             return;
         }
         roles.computeIfAbsent(context.getMember(), k -> new HashSet<>());
