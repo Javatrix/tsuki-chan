@@ -5,6 +5,7 @@ import com.github.javatrix.kawaiisanbot.event.KawaiiSanMentionEventListener;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Logger;
 
 public class KawaiiSan {
 
@@ -19,8 +21,10 @@ public class KawaiiSan {
     private static KawaiiSan instance;
 
     private JDA api;
+    private final Logger logger = Logger.getLogger("Kawaii-San");
 
     public void start() {
+        logger.info("Kawaii-San is starting.");
         instance = this;
         api = JDABuilder.createDefault(TOKEN).build();
         api.getPresence().setActivity(Activity.playing("Still in development! <3"));
