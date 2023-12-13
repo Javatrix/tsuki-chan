@@ -1,5 +1,6 @@
 package com.github.javatrix.kawaiisanbot.util;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
@@ -13,7 +14,7 @@ public class RoleUtils {
         for (Role r : member.getRoles()) {
             maxPermissionLevel = Math.max(maxPermissionLevel, r.getPosition());
         }
-        return maxPermissionLevel > role.getPosition();
+        return (member.getPermissions().contains(Permission.MANAGE_ROLES) && maxPermissionLevel > role.getPosition()) || member.isOwner();
     }
 
 }
