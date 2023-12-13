@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com.github.javatrix'
-version = '1.0-ALPHA'
+version = property('botVersion')
 
 repositories {
     mavenCentral()

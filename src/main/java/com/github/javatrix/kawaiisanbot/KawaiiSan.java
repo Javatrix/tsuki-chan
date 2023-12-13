@@ -4,34 +4,40 @@ import com.github.javatrix.kawaiisanbot.command.CommandManager;
 import com.github.javatrix.kawaiisanbot.event.KawaiiSanMentionEventListener;
 import com.github.javatrix.kawaiisanbot.util.logging.LogType;
 import com.github.javatrix.kawaiisanbot.util.logging.Logger;
-import com.github.javatrix.kawaiisanbot.util.logging.TerminalColor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class KawaiiSan {
 
+    private static String version;
     private static final String TOKEN = System.getenv("KAWAII_SAN_TOKEN");
     private static KawaiiSan instance;
 
     private JDA api;
     private final Logger logger = new Logger("Kawaii-San");
 
-    public void start(boolean debug) {
-        logger.info("Starting {name}...");
-        logger.setColor(Logger.LogParameters.MESSAGE, TerminalColor.YELLOW_BRIGHT);
-        logger.setDisabled(LogType.DEBUG, false);
-        logger.debug("Test debug.");
+    public void start(boolean debug) throws IOException {
+        logger.setDisabled(LogType.DEBUG, !debug);
+
+        logger.info("Starting {name} " + version);
         instance = this;
-        logger.info("Loading JDA...");
+
+        logger.info("Loading JDA.");
         api = JDABuilder.createDefault(TOKEN).build();
-        api.getPresence().setActivity(Activity.playing("Still in development! <3"));
+
+        logger.info("Setting up version info.");
+        Properties properties = new Properties();
+        properties.load(new FileReader("gradle.properties"));
+        version = properties.get("botVersion").toString();
+        api.getPresence().setActivity(Activity.playing(version));
+
         logger.info("Initializing commands.");
         new CommandManager(api);
+
         logger.info("Initializing events.");
         initEvents();
     }
@@ -69,6 +75,10 @@ public class KawaiiSan {
         return instance;
     }
 
+    public static String getVersion() {
+        return version;
+    }
+
     public JDA getApi() {
         return api;
     }
@@ -89,7 +99,7 @@ public class KawaiiSan {
         return logger;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new KawaiiSan().start(args.length != 0 && args[0].equals("debug"));
     }
 }

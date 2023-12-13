@@ -69,6 +69,14 @@ public class Logger {
         this.disabled.put(type, disabled);
     }
 
+    public void enable(LogType type) {
+        disabled.put(type, false);
+    }
+
+    public void disable(LogType type) {
+        disabled.put(type, true);
+    }
+
     public void setColor(LogParameters parameter, TerminalColor terminalColor) {
         colors.put(parameter, terminalColor);
     }
