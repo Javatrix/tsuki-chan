@@ -22,6 +22,9 @@ public class KawaiiSan {
 
     public void start(boolean debug) throws IOException {
         logger.setDisabled(LogType.DEBUG, !debug);
+        Properties properties = new Properties();
+        properties.load(new FileReader("gradle.properties"));
+        version = properties.get("botVersion").toString();
 
         logger.info("Starting {name} " + version);
         instance = this;
@@ -30,9 +33,6 @@ public class KawaiiSan {
         api = JDABuilder.createDefault(TOKEN).build();
 
         logger.info("Setting up version info.");
-        Properties properties = new Properties();
-        properties.load(new FileReader("gradle.properties"));
-        version = properties.get("botVersion").toString();
         api.getPresence().setActivity(Activity.playing(version));
 
         logger.info("Initializing commands.");
@@ -53,7 +53,7 @@ public class KawaiiSan {
                     logger.error("Error changing avatar: " + e);
                 }
             }
-        }, 0, 120000);
+        }, 0, 5 * 60 * 1000);
     }
 
     public void pickRandomAvatar() {
