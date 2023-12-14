@@ -18,7 +18,7 @@ Kawaii-San currently in very early development, so don't expect too much... yet.
 It has not yet been tested in multiple guilds at once, and probably would not work properly if it was. Because of that,
 it is currently **not accessible**.
 Also, most of the assets are placeholders. I will try not to rely on Genshin Impact & Mashin-Dōru wa Kizutsukanai
-fanarts in the future.
+fan arts in the future.
 *(Mihoyo, Reiji, please don't sue me for using them for now)*
 
 # Features
