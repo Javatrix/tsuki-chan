@@ -12,18 +12,19 @@
 
 <p align="center">General purpose utility & games Discord bot that comes with a powerful Minecraft integration.</p>
 
+---
+
 Kawaii-San currently in very early development, so don't expect too much... yet.
 It has not yet been tested in multiple guilds at once, and probably would not work properly if it was. Because of that,
 it is currently **not accessible**.
 Also, most of the assets are placeholders. I will try not to rely on Genshin Impact & Mashin-Dōru wa Kizutsukanai
 fanarts in the future.
-*(Mihoyo, please don't sue me for using them for now)*
+*(Mihoyo, Reiji, please don't sue me for using them for now)*
 
 # Features
 
 - Selfrole command with buttons and custom emojis
-- Two-way Minecraft and Discord chat integration after installing a plugin on the server. The plugin will be released
-  soon.
+- Two-way Minecraft and Discord chat integration after installing a plugin on the server. (The plugin not accessible yet)
 - Right click to hug a user, if they have a bad day :)
 
 # In Development / Planned
@@ -32,7 +33,7 @@ fanarts in the future.
 - Web UI
 - AI chat with custom personalities
 - Music player
-- And much more things I can't even think of right now :) Keep fingers crossed for me!
+- And much more things I can't even think of right now :) Keep your fingers crossed for me!
 
 # Building
 
