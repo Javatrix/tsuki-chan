@@ -39,5 +39,8 @@ cd into the directory and run
 ```
 This will create a runnable JAR file in the build/libs directory.
 
+**IMPORTANT NOTE:
+FOR THE BOT TO RUN CORRECTLY, IT NEEDS THE GRADLE.PROPERTIES FILE IN THE RUNNING DIRECTORY.**
+
 # Bug Reports / Feature Suggestions
 [Open and issue](https://github.com/Javatrix/kawaiisanbot/issues) or join the [Kawaii-San Official Support Server.](https://discord.gg/8a6x653veD)
