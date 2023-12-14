@@ -3,6 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+.kawaii-san
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -15,7 +16,6 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
-secrets
 
 ### Eclipse ###
 .apt_generated

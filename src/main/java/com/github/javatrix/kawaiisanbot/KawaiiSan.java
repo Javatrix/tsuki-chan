@@ -13,6 +13,8 @@ import java.util.*;
 
 public class KawaiiSan {
 
+    public static final File DATA_DIRECTORY = new File(".kawaii-san");
+
     private static String version;
     private static final String TOKEN = System.getenv("KAWAII_SAN_TOKEN");
     private static KawaiiSan instance;
@@ -20,11 +22,10 @@ public class KawaiiSan {
     private JDA api;
     private final Logger logger = new Logger("Kawaii-San");
 
-    public void start(boolean debug) throws IOException {
+    public void start(boolean debug) {
         logger.setDisabled(LogType.DEBUG, !debug);
-        Properties properties = new Properties();
-        properties.load(new FileReader("gradle.properties"));
-        version = properties.get("botVersion").toString();
+        initDataDirectory();
+        loadProperties();
 
         logger.info("Starting {name} " + version);
         instance = this;
@@ -42,6 +43,28 @@ public class KawaiiSan {
         initEvents();
     }
 
+    private void initDataDirectory() {
+        if (!DATA_DIRECTORY.exists()) {
+            logger.info("Data directory does not exist, so creating it.");
+            if (!DATA_DIRECTORY.mkdir()) {
+                logger.error("Could not create the data directory. If the bot does not have the permission to do so, please run it again with the required privileges.");
+                System.exit(1);
+            }
+        }
+    }
+
+    private void loadProperties() {
+        try {
+            Properties properties = new Properties();
+            properties.load(new FileReader("gradle.properties"));
+            version = properties.get("botVersion").toString();
+        } catch (IOException ex) {
+            logger.error("Could not read the properties file, quitting!");
+            logger.error(ex.toString());
+            System.exit(1);
+        }
+    }
+
     private void initEvents() {
         new KawaiiSanMentionEventListener();
         new Timer().scheduleAtFixedRate(new TimerTask() {
@@ -49,16 +72,21 @@ public class KawaiiSan {
             public void run() {
                 try {
                     pickRandomAvatar();
-                } catch (Exception e) {
-                    logger.error("Error changing avatar: " + e);
+                } catch (Exception ex) {
+                    logger.error("Changing avatar failed: " + ex);
                 }
             }
         }, 0, 5 * 60 * 1000);
     }
 
     public void pickRandomAvatar() {
+        File avatars = new File("avatars");
+        if (!avatars.exists()) {
+            logger.warning("No avatars directory, the avatars won't change.");
+            return;
+        }
         List<File> icons = new ArrayList<>();
-        for (File f : new File("avatars").listFiles()) {
+        for (File f : avatars.listFiles()) {
             if (f.getName().endsWith(".png") || f.getName().endsWith(".jpg")) {
                 icons.add(f);
             }
@@ -99,7 +127,7 @@ public class KawaiiSan {
         return logger;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         new KawaiiSan().start(args.length != 0 && args[0].equals("debug"));
     }
 }
