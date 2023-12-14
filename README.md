@@ -12,8 +12,8 @@
 </p>
 
 Kawaii-San currently in very early development, so don't expect too much... yet.
-It has not yet been tested in multiple guilds at once, and probably would not work properly if it did. Because of that, it is currently **not accessible**.
-Also, most of the assets are placeholders. I will try not to rely on Genshin Impact & Mashin-Dōru wa Kizutsukanai fanarts.
+It has not yet been tested in multiple guilds at once, and probably would not work properly if it was. Because of that, it is currently **not accessible**.
+Also, most of the assets are placeholders. I will try not to rely on Genshin Impact & Mashin-Dōru wa Kizutsukanai fanarts in the future.
 *(Mihoyo, please don't sue me for using them for now)*
 
 # Features
@@ -43,4 +43,4 @@ This will create a runnable JAR file in the build/libs directory.
 FOR THE BOT TO RUN CORRECTLY, IT NEEDS THE GRADLE.PROPERTIES FILE IN THE RUNNING DIRECTORY.**
 
 # Bug Reports / Feature Suggestions
-[Open and issue](https://github.com/Javatrix/kawaiisanbot/issues) or join the [Kawaii-San Official Support Server.](https://discord.gg/8a6x653veD)
+[Open an issue](https://github.com/Javatrix/kawaiisanbot/issues) or join the [Kawaii-San Official Support Server.](https://discord.gg/8a6x653veD)
