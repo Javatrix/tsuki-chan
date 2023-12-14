@@ -3,13 +3,14 @@
 </p>
 
 <h1 align="center">Kawaii-San</h1>
-<p align="center">General purpose utility & games Discord bot that comes with a powerful Minecraft integration.</p>
 
 <p align="center">
   <a href="https://discord.gg/8a6x653veD">
     <img src="https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white" alt="discord"/>
   </a>
 </p>
+
+<p align="center">General purpose utility & games Discord bot that comes with a powerful Minecraft integration.</p>
 
 Kawaii-San currently in very early development, so don't expect too much... yet.
 It has not yet been tested in multiple guilds at once, and probably would not work properly if it was. Because of that,
