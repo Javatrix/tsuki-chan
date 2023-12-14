@@ -13,7 +13,7 @@ public class HugCommandExecutor implements UserCommandExecutor {
     @Override
     public void process(UserContextInteractionEvent context) {
         String username = context.getInteraction().getTargetMember().getEffectiveName();
-        context.reply(String.format("1 hug for %s!", username))
+        context.reply(String.format("1 hug(s) for %s!", username))
                 .addActionRow(
                         Button.primary("hug", "Hug " + username)
                                 .withEmoji(Emoji.fromUnicode("❤"))
@@ -27,7 +27,7 @@ public class HugCommandExecutor implements UserCommandExecutor {
                 String content = message.getContentRaw();
                 int amount = Integer.parseInt(content.split(" ")[0]);
                 message.editMessage((amount + 1) + content.replaceFirst(String.valueOf(amount), "")).queue();
-                event.reply(String.format("Hug sent by %s!", event.getUser().getEffectiveName())).queue();
+                event.reply(String.format("%s sent a hug!", event.getUser().getEffectiveName())).queue();
             }
         });
     }
