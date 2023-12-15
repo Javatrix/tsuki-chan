@@ -8,7 +8,9 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class KawaiiSan {
@@ -22,7 +24,7 @@ public class KawaiiSan {
     private JDA api;
     private final Logger logger = new Logger("Kawaii-San");
 
-    public void start(boolean debug) {
+    public void start(boolean debug) throws InterruptedException {
         logger.setDisabled(LogType.DEBUG, !debug);
         initDataDirectory();
         loadProperties();
@@ -31,7 +33,7 @@ public class KawaiiSan {
         instance = this;
 
         logger.info("Loading JDA.");
-        api = JDABuilder.createDefault(TOKEN).build();
+        api = JDABuilder.createDefault(TOKEN).build().awaitReady();
 
         logger.info("Setting up version info.");
         api.getPresence().setActivity(Activity.playing(version));
@@ -127,7 +129,7 @@ public class KawaiiSan {
         return logger;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         new KawaiiSan().start(args.length != 0 && args[0].equals("debug"));
     }
 }

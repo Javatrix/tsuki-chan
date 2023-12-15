@@ -34,11 +34,20 @@ public class Logger {
     }
 
     public void error(String message) {
-        log(LogType.ERROR, message);
+        log(LogType.ERROR, LogType.ERROR.getColor() + message);
     }
 
     public void debug(String message) {
         log(LogType.DEBUG, message);
+    }
+
+    public void exception(Exception ex) {
+        error(ex.getClass().getCanonicalName() + ": " + ex.getLocalizedMessage());
+        StringBuilder stackTrace = new StringBuilder();
+        for (StackTraceElement element : ex.getStackTrace()) {
+            stackTrace.append("\t").append(element).append("\n");
+        }
+        error(stackTrace.toString());
     }
 
     public void log(LogType type, String message) {

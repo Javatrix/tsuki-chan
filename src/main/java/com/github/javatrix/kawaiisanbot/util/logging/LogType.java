@@ -12,6 +12,10 @@ public enum LogType {
         this.color = color;
     }
 
+    public TerminalColor getColor() {
+        return color;
+    }
+
     @Override
     public String toString() {
         return color + super.toString();
