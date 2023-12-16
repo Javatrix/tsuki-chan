@@ -21,6 +21,10 @@ Also, most of the assets are placeholders. I will try not to rely on Genshin Imp
 fan arts in the future.
 *(Mihoyo, Reiji, please don't sue me for using them for now)*
 
+# Licensing
+This project is published under the [GNU General Public License](https://github.com/Javatrix/kawaiisanbot/blob/main/LICENSE).
+You can use code from this project as long as you disclose the source of your work. For more details, view LICENSE.
+
 # Features
 
 - Selfrole command with buttons and custom emojis
@@ -37,13 +41,13 @@ fan arts in the future.
 
 # Building
 
-Download the source code using
+Download the source code using:
 
 ```bash
 git clone https://github.com/javatrix/kawaiisanbot
 ```
 
-cd into the directory and run
+cd into the directory and run:
 
 ```bash
 ./gradlew shadowJar
