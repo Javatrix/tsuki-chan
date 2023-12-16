@@ -17,9 +17,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.data.DataObject;
+import net.dv8tion.jda.internal.entities.EntityBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +61,13 @@ public class KawaiiSan {
                 .setMemberCachePolicy(MemberCachePolicy.ALL).build().awaitReady();
 
         LOGGER.info("Setting up version info.");
-        api.getPresence().setActivity(Activity.playing(version));
+        api.getPresence().setActivity(EntityBuilder.createActivity(DataObject.fromJson("""
+                                {
+                                    "state":"TEST",
+                                    "type":4,
+                                    "name": "Custom Status"         
+                                }
+                """)));
 
         LOGGER.info("Initializing commands.");
         new CommandManager(api);
@@ -124,16 +133,13 @@ public class KawaiiSan {
 
     private void initEvents() {
         new KawaiiSanMentionEventListener();
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    pickRandomAvatar();
-                } catch (Exception ex) {
-                    LOGGER.error("Changing avatar failed: " + ex);
-                }
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                pickRandomAvatar();
+            } catch (Exception ex) {
+                LOGGER.error("Changing avatar failed: " + ex);
             }
-        }, 5 * 60 * 1000, 5 * 60 * 1000);
+        }, 5, 5, TimeUnit.MINUTES);
     }
 
     public void pickRandomAvatar() {
