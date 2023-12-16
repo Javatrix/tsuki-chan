@@ -1,6 +1,6 @@
 <component name="CopyrightManager">
   <copyright>
-    <option name="notice" value="This file is part of the Kawaii-San Discord bot distribution (https://github.com/Javatrix/kawaiisanbot).&#10;Copyright (c) Javatrix." />
+    <option name="notice" value="This file is part of Kawaii-San Discord bot project (https://github.com/Javatrix/kawaiisanbot).&#10;Copyright (c) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;)&amp;#36;today.year Javatrix.&#10;The project license can be seen here: https://raw.githubusercontent.com/Javatrix/kawaiisanbot/main/LICENSE" />
     <option name="myName" value="GPLv3.0" />
   </copyright>
 </component>
