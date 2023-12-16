@@ -68,6 +68,16 @@ public class KawaiiSan {
 
         LOGGER.info("Loading data.");
         loadData();
+
+        LOGGER.info("Setting up auto saving based on .properties.");
+        int autosave = 60;
+        try {
+            autosave = Integer.parseInt(props.get("autosaveSeconds").toString());
+        } catch (Exception ignored) {
+            LOGGER.warning("Could not read autosave interval from gradle.properties file. Using default one of 60 seconds.");
+        }
+        LOGGER.info("Autosave interval is set to " + autosave + " seconds.");
+        scheduler.scheduleAtFixedRate(this::saveData, 0, autosave, TimeUnit.SECONDS);
     }
 
     private void loadData() throws IOException {
@@ -86,11 +96,13 @@ public class KawaiiSan {
     }
 
     public void saveData() {
+        LOGGER.info("Saving data...");
         List<GuildData> guilds = new ArrayList<>();
         for (Guild guild : tempbans.keySet()) {
             guilds.add(new GuildData(guild, tempbans.get(guild)));
         }
         DATA_MANAGER.saveGuilds(guilds);
+        LOGGER.info("Saved.");
     }
 
     public void scheduleTempbanRevocation(Tempban tempban) {
