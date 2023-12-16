@@ -61,18 +61,13 @@ public class KawaiiSan {
                 .setMemberCachePolicy(MemberCachePolicy.ALL).build().awaitReady();
 
         LOGGER.info("Setting up version info.");
-        api.getPresence().setActivity(EntityBuilder.createActivity(DataObject.fromJson("""
-                                {
-                                    "state":"TEST",
-                                    "type":4,
-                                    "name": "Custom Status"         
-                                }
-                """)));
+        api.getPresence().setActivity(Activity.playing(version));
 
         LOGGER.info("Initializing commands.");
         new CommandManager(api);
 
         LOGGER.info("Initializing events.");
+
         initEvents();
 
         LOGGER.info("Loading data.");
