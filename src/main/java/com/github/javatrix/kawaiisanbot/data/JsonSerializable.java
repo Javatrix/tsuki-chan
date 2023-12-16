@@ -25,6 +25,10 @@ public abstract class JsonSerializable {
         properties.add(jsonProperty);
     }
 
+    public JsonElement getProperty(String name) {
+        return toJson().get(name);
+    }
+
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         Gson gson = new Gson();

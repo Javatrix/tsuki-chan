@@ -26,6 +26,10 @@ public class Tempban extends JsonSerializable {
         addProperty("expiration_date", expiration.getTime());
     }
 
+    public Tempban(String userId, Guild guild, long expirationDate) {
+        this(userId, guild, new Date(expirationDate));
+    }
+
     public boolean expired() {
         return expiration.before(Calendar.getInstance().getTime());
     }

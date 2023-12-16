@@ -8,7 +8,7 @@ package com.github.javatrix.kawaiisanbot.command.slash;
 
 import com.github.javatrix.kawaiisanbot.KawaiiSan;
 import com.github.javatrix.kawaiisanbot.event.button.KawaiiSanButtonListener;
-import com.github.javatrix.kawaiisanbot.util.RoleUtils;
+import com.github.javatrix.kawaiisanbot.util.MemberUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -72,7 +72,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
 
     private void addRole(SlashCommandInteractionEvent context) {
         Role role = context.getOption("role").getAsRole();
-        if (!RoleUtils.canAssignRole(KawaiiSan.getInstance().asMember(context.getGuild()), role)) {
+        if (!MemberUtils.canModify(KawaiiSan.getInstance().asMember(context.getGuild()), role)) {
             context.reply("Sorry, but I can't assign this role. I can only assign roles that are below me in the hierarchy.\n## :sweat:").setEphemeral(true).queue();
             return;
         }

@@ -61,13 +61,13 @@ public class CommandManager extends ListenerAdapter {
                 Commands.user("Hug")
         ).queue();
 
-        KawaiiSan.getInstance().getLogger().info("Creating slash executors...");
+        KawaiiSan.LOGGER.info("Creating slash executors...");
         slashExecutors.put("uwu", new UwUCommandExecutor());
         slashExecutors.put("selfrole", new SelfRoleExecutor());
         slashExecutors.put("clear", new ClearChannelExecutor());
         slashExecutors.put("tempban", new TempBanExecutor());
 
-        KawaiiSan.getInstance().getLogger().info("Creating context menu executors...");
+        KawaiiSan.LOGGER.info("Creating context menu executors...");
         userExecutors.put("Hug", new HugCommandExecutor());
 
         api.addEventListener(this);
@@ -75,7 +75,7 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        KawaiiSan.getInstance().getLogger().debug("Slash command: " + event.getInteraction().getFullCommandName() + " " + event.getInteraction().getOptions());
+        KawaiiSan.LOGGER.debug("Slash command: " + event.getInteraction().getFullCommandName() + " " + event.getInteraction().getOptions());
         SlashCommandExecutor executor = slashExecutors.get(event.getName());
         if (executor == null) {
             event.reply("Sorry, it seems like the handler responsible for processing this command is not registered.Please report this issue to devs as soon as possible.").queue();

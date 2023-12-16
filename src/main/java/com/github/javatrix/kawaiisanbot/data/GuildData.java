@@ -8,6 +8,7 @@ package com.github.javatrix.kawaiisanbot.data;
 
 import com.github.javatrix.kawaiisanbot.user.Tempban;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.Collection;
@@ -21,5 +22,10 @@ public class GuildData extends JsonSerializable {
             tempbans.forEach(tempban -> tempbanArray.add(tempban.toJson()));
         }
         addProperty("tempbans", tempbanArray);
+    }
+
+    public GuildData(JsonObject json) {
+        addProperty("id", json.get("id").getAsString());
+        addProperty("tempbans", json.get("tempbans").getAsJsonArray());
     }
 }

@@ -24,7 +24,7 @@ public class FileUtils {
             writer.write(content.toString());
             writer.close();
         } catch (IOException ex) {
-            KawaiiSan.getInstance().getLogger().exception(ex);
+            KawaiiSan.LOGGER.exception(ex);
         }
     }
 

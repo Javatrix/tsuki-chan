@@ -7,13 +7,12 @@
 package com.github.javatrix.kawaiisanbot;
 
 import com.github.javatrix.kawaiisanbot.command.CommandManager;
+import com.github.javatrix.kawaiisanbot.data.DataManager;
 import com.github.javatrix.kawaiisanbot.data.GuildData;
 import com.github.javatrix.kawaiisanbot.event.KawaiiSanMentionEventListener;
 import com.github.javatrix.kawaiisanbot.user.Tempban;
-import com.github.javatrix.kawaiisanbot.util.FileUtils;
 import com.github.javatrix.kawaiisanbot.util.logging.LogType;
 import com.github.javatrix.kawaiisanbot.util.logging.Logger;
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.JDA;
@@ -23,10 +22,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -34,117 +30,84 @@ import java.util.concurrent.TimeUnit;
 public class KawaiiSan {
 
     public static final File DATA_DIRECTORY = new File(".kawaii-san");
+    public static final Logger LOGGER = new Logger("Kawaii-San");
+    public static final DataManager DATA_MANAGER = new DataManager(DATA_DIRECTORY);
 
     private static String version;
     private static final String TOKEN = System.getenv("KAWAII_SAN_TOKEN");
     private static KawaiiSan instance;
 
     private JDA api;
-    private final Logger logger = new Logger("Kawaii-San");
+    private final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(8);
     private final Map<Guild, List<Tempban>> tempbans = new HashMap<>();
-    private final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(16);
+
+    private KawaiiSan() {
+    }
 
     public void start(boolean debug) throws InterruptedException, IOException {
-        logger.setDisabled(LogType.DEBUG, !debug);
-        initDataDirectory();
-        loadProperties();
+        LOGGER.setDisabled(LogType.DEBUG, !debug);
+        Properties props = DATA_MANAGER.loadProperties();
+        version = props.get("botVersion").toString();
 
-        logger.info("Starting {name} " + version);
+        LOGGER.info("Starting {name} " + version);
         instance = this;
 
-        logger.info("Loading JDA.");
+        LOGGER.info("Loading JDA.");
         api = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .setMemberCachePolicy(MemberCachePolicy.ALL).build().awaitReady();
 
-        logger.info("Setting up version info.");
+        LOGGER.info("Setting up version info.");
         api.getPresence().setActivity(Activity.playing(version));
 
-        logger.info("Initializing commands.");
+        LOGGER.info("Initializing commands.");
         new CommandManager(api);
 
-        logger.info("Initializing events.");
+        LOGGER.info("Initializing events.");
         initEvents();
 
-        logger.info("Loading data.");
+        LOGGER.info("Loading data.");
         loadData();
     }
 
     private void loadData() throws IOException {
-        loadGuilds();
+        for (GuildData guildData : DATA_MANAGER.loadGuilds()) {
+            for (JsonElement tempban : guildData.getProperty("tempbans").getAsJsonArray().asList()) {
+                JsonObject tempbanData = tempban.getAsJsonObject();
+                Guild guild = api.getGuildById(guildData.getProperty("id").getAsString());
+                Tempban t = new Tempban(tempbanData.get("user_id").getAsString(),
+                        guild,
+                        tempbanData.get("expiration_date").getAsLong());
+                tempbans.putIfAbsent(guild, new ArrayList<>());
+                tempbans.get(guild).add(t);
+                scheduleTempbanRevocation(t);
+            }
+        }
     }
 
     public void saveData() {
-        saveGuilds();
+        List<GuildData> guilds = new ArrayList<>();
+        for (Guild guild : tempbans.keySet()) {
+            guilds.add(new GuildData(guild, tempbans.get(guild)));
+        }
+        DATA_MANAGER.saveGuilds(guilds);
     }
 
-    private void saveGuilds() {
-        for (Guild guild : api.getGuilds()) {
-            GuildData data = new GuildData(guild, tempbans.get(guild));
-            FileUtils.writeToFile(new File(DATA_DIRECTORY, "guilds/"), guild.getName() + ".json", data.toJson());
+    public void scheduleTempbanRevocation(Tempban tempban) {
+        long delay = tempban.getExpiration().getTime() - Calendar.getInstance().getTimeInMillis();
+        if (delay < 0) {
+            delay = 0;
         }
-    }
-
-    private void loadGuilds() throws IOException {
-        File guilds = new File(DATA_DIRECTORY, "guilds");
-        if (!guilds.exists() || !guilds.isDirectory()) {
-            return;
-        }
-
-        Gson gson = new Gson();
-        for (File guildFile : guilds.listFiles()) {
-            JsonObject guildData = gson.fromJson(Files.readString(Path.of(guildFile.getAbsolutePath())), JsonObject.class);
-            Guild guild = api.getGuildById(guildData.get("id").getAsString());
-            logger.debug("Loading guild '" + guild.getName() + "'");
-            loadTempbans(guild, guildData.get("tempbans").getAsJsonArray().asList());
-        }
-    }
-
-    private void loadTempbans(Guild guild, List<JsonElement> tempbans) {
-        for (JsonElement tempbanData : tempbans) {
-            String id = tempbanData.getAsJsonObject().get("user_id").getAsString();
-            Date expiration = new Date(tempbanData.getAsJsonObject().get("expiration_date").getAsLong());
-            Tempban tempban = new Tempban(id, guild, expiration);
-            if (tempban.expired()) {
-                System.out.println(id);
-                System.out.println(api.retrieveUserById(id).complete().getEffectiveName());
-                guild.unban(api.retrieveUserById(id).complete()).queue();
+        scheduler.schedule(() -> {
+            User user = api.retrieveUserById(tempban.getUserId()).complete();
+            if (tempban.getGuild().retrieveBan(user).complete() == null) {
+                tempbans.get(tempban.getGuild()).remove(tempban);
                 return;
             }
-            this.tempbans.putIfAbsent(guild, new ArrayList<>());
-            this.tempbans.get(guild).add(tempban);
-            scheduleTempbanRevocation(tempban);
-        }
-    }
-
-    private void scheduleTempbanRevocation(Tempban tempban) {
-        scheduler.schedule(() -> {
+            tempban.getGuild().unban(user).queue();
             Invite invite = tempban.getGuild().getRulesChannel().createInvite().complete();
-            api.retrieveUserById(tempban.getUserId()).complete().openPrivateChannel().complete().sendMessage("You temporary ban on " + tempban.getGuild().getName() + " has expired. Join back in with this link!\n" + invite.getUrl()).queue();
-            tempban.getGuild().unban(api.retrieveUserById(tempban.getUserId()).complete()).queue();
-        }, tempban.getExpiration().getTime() - Calendar.getInstance().getTimeInMillis(), TimeUnit.MILLISECONDS);
-    }
-
-    private void initDataDirectory() {
-        if (!DATA_DIRECTORY.exists()) {
-            logger.info("Data directory does not exist, so creating it.");
-            if (!DATA_DIRECTORY.mkdir()) {
-                logger.error("Could not create the data directory. If the bot does not have the permission to do so, please run it again with the required privileges.");
-                System.exit(1);
-            }
-        }
-    }
-
-    private void loadProperties() {
-        try {
-            Properties properties = new Properties();
-            properties.load(new FileReader("gradle.properties"));
-            version = properties.get("botVersion").toString();
-        } catch (IOException ex) {
-            logger.error("Could not read the properties file, quitting!");
-            logger.error(ex.toString());
-            System.exit(1);
-        }
+            user.openPrivateChannel().complete().sendMessage(user.getAsMention() + " your temporary ban on " + tempban.getGuild().getName() + " has expired! :ganyu_amazed: Join back in with this link:\n" + invite.getUrl()).queue();
+        }, delay, TimeUnit.MILLISECONDS);
     }
 
     private void initEvents() {
@@ -155,7 +118,7 @@ public class KawaiiSan {
                 try {
                     pickRandomAvatar();
                 } catch (Exception ex) {
-                    logger.error("Changing avatar failed: " + ex);
+                    LOGGER.error("Changing avatar failed: " + ex);
                 }
             }
         }, 5 * 60 * 1000, 5 * 60 * 1000);
@@ -164,7 +127,7 @@ public class KawaiiSan {
     public void pickRandomAvatar() {
         File avatars = new File("avatars");
         if (!avatars.exists()) {
-            logger.warning("No avatars directory, the avatars won't change.");
+            LOGGER.warning("No avatars directory, the avatars won't change.");
             return;
         }
         List<File> icons = new ArrayList<>();
@@ -177,7 +140,7 @@ public class KawaiiSan {
             Icon avatar = Icon.from(icons.get((int) (Math.random() * icons.size())));
             KawaiiSan.getInstance().getUser().getManager().setAvatar(avatar).queue();
         } catch (IOException e) {
-            logger.error("Loading avatar file failed: " + e);
+            LOGGER.error("Loading avatar file failed: " + e);
         }
     }
 
@@ -209,10 +172,6 @@ public class KawaiiSan {
             throw new IllegalStateException("The bot is not present in the specified guild: " + guild);
         }
         return member;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 
     public static void main(String[] args) throws Exception {

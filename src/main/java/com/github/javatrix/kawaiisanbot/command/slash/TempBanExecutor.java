@@ -6,6 +6,7 @@
 
 package com.github.javatrix.kawaiisanbot.command.slash;
 
+import com.github.javatrix.kawaiisanbot.KawaiiSan;
 import com.github.javatrix.kawaiisanbot.util.MemberUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
@@ -38,6 +39,10 @@ public class TempBanExecutor implements SlashCommandExecutor {
 
         Date expirationDate = new Date(Calendar.getInstance().getTimeInMillis() + TimeUnit.MILLISECONDS.convert(time, unit));
         Member member = context.getGuild().retrieveMemberById(user.getId()).complete();
+        if (!MemberUtils.canModify(KawaiiSan.getInstance().asMember(context.getGuild()), member)) {
+            context.reply("Sorry, I couldn't fulfill your request. :confounded: The person you are trying to punish has a higher rank than I do.").setEphemeral(true).queue();
+            return;
+        }
         MemberUtils.tempban(member, expirationDate, reason);
         context.reply(user.getEffectiveName() + " was banned. They will be able to join again " + TimeFormat.DATE_TIME_LONG.format(expirationDate.getTime()) + ".").setEphemeral(true).queue();
         member.getUser().openPrivateChannel().complete().sendMessage("You have been banned from " + context.getGuild().getName() + " :( Your ban expires " + TimeFormat.DATE_TIME_LONG.format(expirationDate.getTime())).queue();
