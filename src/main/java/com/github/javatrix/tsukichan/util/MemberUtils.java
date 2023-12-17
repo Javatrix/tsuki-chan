@@ -29,8 +29,13 @@ public class MemberUtils {
         return getPermissionLevel(member) > role.getPosition();
     }
 
+    /**
+     * @param modifier The member that tries to modify the other member.
+     * @param member The member you are trying to modify
+     * @return whether the modifier can modify the member.
+     */
     public static boolean canModify(Member modifier, Member member) {
-        return getPermissionLevel(modifier) > getPermissionLevel(member);
+        return getPermissionLevel(modifier) > getPermissionLevel(member) && !member.isOwner();
     }
 
     public static int getPermissionLevel(Member member) {

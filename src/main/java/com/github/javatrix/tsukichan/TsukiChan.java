@@ -23,9 +23,11 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.TimeFormat;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +38,6 @@ public class TsukiChan {
     public static final DataManager DATA_MANAGER = new DataManager(DATA_DIRECTORY);
 
     private static String version;
-    private static final String TOKEN = System.getenv("KAWAII_SAN_TOKEN");
     private static TsukiChan instance;
 
     private JDA api;
@@ -55,9 +56,10 @@ public class TsukiChan {
         instance = this;
 
         LOGGER.info("Loading JDA.");
-        api = JDABuilder.createDefault(TOKEN)
+        api = JDABuilder.createDefault(System.getenv("TSUKI_CHAN_TOKEN"))
                 .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                .setMemberCachePolicy(MemberCachePolicy.ALL).build().awaitReady();
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .build().awaitReady();
 
         LOGGER.info("Setting up version info.");
         api.getPresence().setActivity(Activity.customStatus("\uD83D\uDCA2 " + version));
@@ -109,7 +111,7 @@ public class TsukiChan {
 
     public void scheduleTempbanRevocation(Tempban tempban) {
         long delay = tempban.getExpiration().getTime() - Calendar.getInstance().getTimeInMillis();
-        if (delay < 0) {
+        if (tempban.expired()) {
             delay = 0;
         }
         scheduler.schedule(() -> {
@@ -135,6 +137,7 @@ public class TsukiChan {
                 .setAuthor("Banned" + user.getEffectiveName(), null, user.getAvatarUrl())
                 .addField("Reason", reason, false)
                 .addField("Expiration Date", TimeFormat.DATE_TIME_LONG.format(expiration.getTime()), false)
+                .setColor(Color.RED)
                 .build();
     }
 
@@ -144,6 +147,7 @@ public class TsukiChan {
                 .addField("Reason", reason, false)
                 .addField("Expiration Date", TimeFormat.DATE_TIME_LONG.format(expiration.getTime()), false)
                 .setFooter("I will message you when your ban expires so you can join back.")
+                .setColor(Color.RED)
                 .build();
     }
 

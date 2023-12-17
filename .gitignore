@@ -3,7 +3,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-.kawaii-san
+.tsuki-chan/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

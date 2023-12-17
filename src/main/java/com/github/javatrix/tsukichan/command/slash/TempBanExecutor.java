@@ -32,20 +32,21 @@ public class TempBanExecutor implements SlashCommandExecutor {
     @Override
     public void process(SlashCommandInteractionEvent context) {
         User user = context.getOption(USER_OPTION.getName()).getAsUser();
-        String reason = context.getOption(REASON_OPTION.getName()) == null ? "The ban hammer has spoken!" : context.getOption(REASON_OPTION.getName()).getAsString();
+        String reason = context.getOption(REASON_OPTION.getName()) == null ? "The Ban Hammer has spoken!" : context.getOption(REASON_OPTION.getName()).getAsString();
         int time = context.getOption(TIME_OPTION.getName()).getAsInt();
         TimeUnit unit = TimeUnit.valueOf(context.getOption(TIME_UNIT_OPTION.getName()).getAsString().toUpperCase());
-
-        Date expirationDate = new Date(Calendar.getInstance().getTimeInMillis() + TimeUnit.MILLISECONDS.convert(time, unit));
         if (!context.getGuild().isMember(user)) {
             context.reply("This user is not a member of this guild! Please make sure you specify an existing member.").setEphemeral(true).queue();
             return;
         }
+
+        Date expirationDate = new Date(Calendar.getInstance().getTimeInMillis() + TimeUnit.MILLISECONDS.convert(time, unit));
         Member member = context.getGuild().retrieveMemberById(user.getId()).complete();
         if (!MemberUtils.canModify(TsukiChan.getInstance().asMember(context.getGuild()), member)) {
             context.reply("Sorry, I couldn't fulfill your request. :confounded: The person you are trying to punish has a higher rank than I do.").setEphemeral(true).queue();
             return;
         }
+
         MemberUtils.tempban(member, reason, expirationDate);
         context.replyEmbeds(TsukiChan.createTempbanEmbed(user, reason, expirationDate)).setEphemeral(true).queue();
         member.getUser().openPrivateChannel().complete().sendMessageEmbeds(TsukiChan.createTempbanEmbed(user, context.getGuild(), reason, expirationDate)).queue();
