@@ -57,7 +57,7 @@ public class DataManager {
     public List<GuildData> loadGuilds() throws IOException {
         File guildsDirectory = new File(dataDirectory, "guilds");
         if (!guildsDirectory.exists() || !guildsDirectory.isDirectory()) {
-            return null;
+            return new ArrayList<>();
         }
 
         Gson gson = new Gson();
