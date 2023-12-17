@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MemberUtils {
 
-    public static void tempban(Member member, Date expiration, String reason) {
+    public static void tempban(Member member, String reason, Date expiration) {
         member.ban(0, TimeUnit.SECONDS).reason(reason).queue();
         KawaiiSan.getInstance().addTempban(new Tempban(member.getId(), member.getGuild(), expiration));
         KawaiiSan.getInstance().saveData();

@@ -15,14 +15,13 @@ import com.github.javatrix.kawaiisanbot.util.logging.LogType;
 import com.github.javatrix.kawaiisanbot.util.logging.Logger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.data.DataObject;
-import net.dv8tion.jda.internal.entities.EntityBuilder;
+import net.dv8tion.jda.api.utils.TimeFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,7 +66,6 @@ public class KawaiiSan {
         new CommandManager(api);
 
         LOGGER.info("Initializing events.");
-
         initEvents();
 
         LOGGER.info("Loading data.");
@@ -122,8 +120,31 @@ public class KawaiiSan {
             }
             tempban.getGuild().unban(user).queue();
             Invite invite = tempban.getGuild().getRulesChannel().createInvite().complete();
-            user.openPrivateChannel().complete().sendMessage(user.getAsMention() + " your temporary ban on " + tempban.getGuild().getName() + " has expired! :ganyu_amazed: Join back in with this link:\n" + invite.getUrl()).queue();
+            user.openPrivateChannel().complete().sendMessage(user.getAsMention() + " your temporary ban on " + tempban.getGuild().getName() + " has expired! :smiley: Join back in with this link:\n" + invite.getUrl()).queue();
         }, delay, TimeUnit.MILLISECONDS);
+    }
+
+    public void addTempban(Tempban tempban) {
+        tempbans.putIfAbsent(tempban.getGuild(), new ArrayList<>());
+        tempbans.get(tempban.getGuild()).add(tempban);
+        scheduleTempbanRevocation(tempban);
+    }
+
+    public static MessageEmbed createTempbanEmbed(User user, String reason, Date expiration) {
+        return new EmbedBuilder()
+                .setAuthor("Banned" + user.getEffectiveName(), null, user.getAvatarUrl())
+                .addField("Reason", reason, false)
+                .addField("Expiration Date", TimeFormat.DATE_TIME_LONG.format(expiration.getTime()), false)
+                .build();
+    }
+
+    public static MessageEmbed createTempbanEmbed(User user, Guild guild, String reason, Date expiration) {
+        return new EmbedBuilder()
+                .setAuthor("You have been banned from " + guild.getName() + " \uD83D\uDE41", null, user.getAvatarUrl())
+                .addField("Reason", reason, false)
+                .addField("Expiration Date", TimeFormat.DATE_TIME_LONG.format(expiration.getTime()), false)
+                .setFooter("I will message you when your ban expires so you can join back.")
+                .build();
     }
 
     private void initEvents() {
@@ -155,12 +176,6 @@ public class KawaiiSan {
         } catch (IOException e) {
             LOGGER.error("Loading avatar file failed: " + e);
         }
-    }
-
-    public void addTempban(Tempban tempban) {
-        tempbans.putIfAbsent(tempban.getGuild(), new ArrayList<>());
-        tempbans.get(tempban.getGuild()).add(tempban);
-        scheduleTempbanRevocation(tempban);
     }
 
     public static KawaiiSan getInstance() {

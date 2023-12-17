@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.utils.TimeFormat;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -38,13 +37,18 @@ public class TempBanExecutor implements SlashCommandExecutor {
         TimeUnit unit = TimeUnit.valueOf(context.getOption(TIME_UNIT_OPTION.getName()).getAsString().toUpperCase());
 
         Date expirationDate = new Date(Calendar.getInstance().getTimeInMillis() + TimeUnit.MILLISECONDS.convert(time, unit));
+        if (!context.getGuild().isMember(user)) {
+            context.reply("This user is not a member of this guild! Please make sure you specify an existing member.").setEphemeral(true).queue();
+            return;
+        }
         Member member = context.getGuild().retrieveMemberById(user.getId()).complete();
         if (!MemberUtils.canModify(KawaiiSan.getInstance().asMember(context.getGuild()), member)) {
             context.reply("Sorry, I couldn't fulfill your request. :confounded: The person you are trying to punish has a higher rank than I do.").setEphemeral(true).queue();
             return;
         }
-        MemberUtils.tempban(member, expirationDate, reason);
-        context.reply(user.getEffectiveName() + " was banned. They will be able to join again " + TimeFormat.DATE_TIME_LONG.format(expirationDate.getTime()) + ".").setEphemeral(true).queue();
-        member.getUser().openPrivateChannel().complete().sendMessage("You have been banned from " + context.getGuild().getName() + " :( Your ban expires " + TimeFormat.DATE_TIME_LONG.format(expirationDate.getTime())).queue();
+        MemberUtils.tempban(member, reason, expirationDate);
+        context.replyEmbeds(KawaiiSan.createTempbanEmbed(user, reason, expirationDate)).setEphemeral(true).queue();
+        member.getUser().openPrivateChannel().complete().sendMessageEmbeds(KawaiiSan.createTempbanEmbed(user, context.getGuild(), reason, expirationDate)).queue();
     }
+
 }
