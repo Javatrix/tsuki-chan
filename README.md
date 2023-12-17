@@ -1,8 +1,8 @@
 <p align="center">
-<img src="https://i.imgur.com/jQiqeyC.png" width="25%" alt="kawaii-san"/>
+<img src="https://i.imgur.com/jQiqeyC.png" width="25%" alt="tsuki-chan"/>
 </p>
 
-<h1 align="center">Kawaii-San</h1>
+<h1 align="center">Tsuki-Chan</h1>
 
 <p align="center">
   <a href="https://discord.gg/8a6x653veD">
@@ -14,15 +14,15 @@
 
 ---
 
-Kawaii-San currently in very early development, so don't expect too much... yet.
-It has not yet been tested in multiple guilds at once, and probably would not work properly if it was. Because of that,
-it is currently **not accessible**.
+Tsuki-Chan currently in very early development, so don't expect too much... yet.
+She has not yet been tested in multiple guilds at once, and probably would not work properly if she was. Because of that,
+she is currently **not accessible**.
 Also, most of the assets are placeholders. I will try not to rely on Genshin Impact & Mashin-Dōru wa Kizutsukanai
 fan arts in the future.
 *(Mihoyo, Reiji, please don't sue me for using them for now)*
 
 # Licensing
-This project is published under the [GNU General Public License](https://github.com/Javatrix/kawaiisanbot/blob/main/LICENSE).
+This project is published under the [GNU General Public License](https://github.com/Javatrix/tsuki-chan/blob/main/LICENSE).
 You can use code from this project as long as you disclose the source of your work. For more details, view LICENSE.
 
 # Features
@@ -44,7 +44,7 @@ You can use code from this project as long as you disclose the source of your wo
 Download the source code using:
 
 ```bash
-git clone https://github.com/javatrix/kawaiisanbot
+git clone https://github.com/javatrix/tsuki-chan
 ```
 
 cd into the directory and run:
@@ -60,5 +60,5 @@ FOR THE BOT TO RUN CORRECTLY, IT NEEDS THE GRADLE.PROPERTIES FILE IN THE RUNNING
 
 # Bug Reports / Feature Suggestions
 
-[Open an issue](https://github.com/Javatrix/kawaiisanbot/issues) or join
-the [Kawaii-San Official Support Server.](https://discord.gg/8a6x653veD)
+[Open an issue](https://github.com/Javatrix/tsuki-chan/issues) or join
+the [Tsuki-Chan Official Support Server.](https://discord.gg/8a6x653veD)
