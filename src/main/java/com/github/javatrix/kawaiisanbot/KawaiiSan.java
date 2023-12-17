@@ -61,6 +61,7 @@ public class KawaiiSan {
                 .setMemberCachePolicy(MemberCachePolicy.ALL).build().awaitReady();
 
         LOGGER.info("Setting up version info.");
+        api.getPresence().setActivity(Activity.customStatus("\uD83D\uDCA2 " + version));
 
         LOGGER.info("Initializing commands.");
         new CommandManager(api);
