@@ -33,6 +33,7 @@ public class CommandManager extends ListenerAdapter {
     public CommandManager(JDA api) {
         api.updateCommands().addCommands(
                 //Slash commands
+                Commands.slash("tsuki-help", "Shows this help."),
                 Commands.slash("uwu", "Says UwU or not, depending on the option chosen.")
                         .addOptions(UwUCommandExecutor.SAY_UWU_OPTION),
                 Commands.slash("selfrole", "Adds self roles to users.")
@@ -62,6 +63,7 @@ public class CommandManager extends ListenerAdapter {
         ).queue();
 
         TsukiChan.LOGGER.info("Creating slash executors...");
+        slashExecutors.put("tsuki-help", new HelpCommandExecutor());
         slashExecutors.put("uwu", new UwUCommandExecutor());
         slashExecutors.put("selfrole", new SelfRoleExecutor());
         slashExecutors.put("clear", new ClearChannelExecutor());
