@@ -24,6 +24,8 @@ fan arts in the future.
 # Licensing
 This project is published under the [GNU General Public License](https://github.com/Javatrix/tsuki-chan/blob/main/LICENSE).
 You can use code from this project as long as you disclose the source of your work. For more details, view LICENSE.
+Tsuki-Chan also uses [Lava Player](https://github.com/sedmelluq/lavaplayer). The license of theirs is public on their
+Github repo.
 
 # Features
 
