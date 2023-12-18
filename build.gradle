@@ -8,9 +8,7 @@ version = property('botVersion')
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://m2.dv8tion.net/releases'
-    }
+    maven { url "https://jitpack.io" }
 }
 
 shadowJar {
@@ -22,7 +20,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation 'net.dv8tion:JDA:5.0.0-beta.18'
     implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'com.sedmelluq:lavaplayer:1.3.77'
+    implementation 'dev.arbjerg:lavaplayer:2.0.4'
 }
 
 jar {

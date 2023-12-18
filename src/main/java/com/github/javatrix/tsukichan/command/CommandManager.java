@@ -55,7 +55,8 @@ public class CommandManager extends ListenerAdapter {
                                 TempBanExecutor.TIME_OPTION,
                                 TempBanExecutor.TIME_UNIT_OPTION,
                                 TempBanExecutor.REASON_OPTION
-                        )
+                        ),
+                Commands.slash("play", "Plays music from YouTube.")
         ).addCommands(
                 //Context menu commands
                 Commands.user("Hug")
@@ -66,6 +67,7 @@ public class CommandManager extends ListenerAdapter {
         slashExecutors.put("selfrole", new SelfRoleExecutor());
         slashExecutors.put("clear", new ClearChannelExecutor());
         slashExecutors.put("tempban", new TempBanExecutor());
+        slashExecutors.put("play", new PlayCommandExecutor());
 
         TsukiChan.LOGGER.info("Creating context menu executors...");
         userExecutors.put("Hug", new HugCommandExecutor());

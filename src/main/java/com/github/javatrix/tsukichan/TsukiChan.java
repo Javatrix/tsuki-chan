@@ -57,7 +57,7 @@ public class TsukiChan {
 
         LOGGER.info("Loading JDA.");
         api = JDABuilder.createDefault(System.getenv("TSUKI_CHAN_TOKEN"))
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build().awaitReady();
 
