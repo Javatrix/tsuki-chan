@@ -7,7 +7,7 @@
 package com.github.javatrix.tsukichan.command.slash;
 
 import com.github.javatrix.tsukichan.TsukiChan;
-import com.github.javatrix.tsukichan.event.button.KawaiiSanButtonListener;
+import com.github.javatrix.tsukichan.event.button.TsukiChanButtonListener;
 import com.github.javatrix.tsukichan.util.MemberUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -29,7 +29,7 @@ public class SelfRoleExecutor implements SlashCommandExecutor {
     private static final Map<Member, Map<Role, Emoji>> emojis = new HashMap<>();
 
     public SelfRoleExecutor() {
-        KawaiiSanButtonListener.register((ButtonInteractionEvent event) -> {
+        TsukiChanButtonListener.register((ButtonInteractionEvent event) -> {
             Role role;
             try {
                 role = event.getGuild().getRoleById(event.getComponentId());

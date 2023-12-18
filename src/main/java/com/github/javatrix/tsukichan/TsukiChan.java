@@ -9,7 +9,7 @@ package com.github.javatrix.tsukichan;
 import com.github.javatrix.tsukichan.command.CommandManager;
 import com.github.javatrix.tsukichan.data.DataManager;
 import com.github.javatrix.tsukichan.data.GuildData;
-import com.github.javatrix.tsukichan.event.KawaiiSanMentionEventListener;
+import com.github.javatrix.tsukichan.event.TsukiChanMentionEventListener;
 import com.github.javatrix.tsukichan.user.Tempban;
 import com.github.javatrix.tsukichan.util.logging.LogType;
 import com.github.javatrix.tsukichan.util.logging.Logger;
@@ -152,7 +152,7 @@ public class TsukiChan {
     }
 
     private void initEvents() {
-        new KawaiiSanMentionEventListener();
+        new TsukiChanMentionEventListener();
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 pickRandomAvatar();
