@@ -21,13 +21,13 @@ import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
  * This class schedules tracks for the audio player. It contains the queue of tracks.
  */
 public class TrackScheduler extends AudioEventAdapter {
-    private final AudioPlayer player;
+    private final MusicPlayer player;
     private final BlockingQueue<AudioTrack> queue;
 
     /**
      * @param player The audio player this scheduler uses
      */
-    public TrackScheduler(AudioPlayer player) {
+    public TrackScheduler(MusicPlayer player) {
         this.player = player;
         this.queue = new LinkedBlockingQueue<>();
     }
@@ -47,7 +47,7 @@ public class TrackScheduler extends AudioEventAdapter {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void queue(AudioTrack track) {
         LOGGER.debug("Queueing " + track.getInfo().title);
-        if (!player.startTrack(track, true)) {
+        if (!player.getAudioPlayer().startTrack(track, true)) {
             LOGGER.debug("Track " + track.getInfo().title + " added to the queue.");
             queue.offer(track);
         }
@@ -58,7 +58,7 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     public void nextTrack() {
         AudioTrack track = queue.poll();
-        if (!player.startTrack(track, false)) {
+        if (!player.getAudioPlayer().startTrack(track, false)) {
             LOGGER.debug("Next track is null, stopping the player.");
             return;
         }
@@ -71,5 +71,9 @@ public class TrackScheduler extends AudioEventAdapter {
         if (endReason.mayStartNext) {
             nextTrack();
         }
+    }
+
+    public boolean isQueueEmpty() {
+        return queue.isEmpty();
     }
 }

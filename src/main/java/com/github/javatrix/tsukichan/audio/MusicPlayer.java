@@ -39,7 +39,7 @@ public class MusicPlayer {
         AudioSourceManagers.registerRemoteSources(playerManager);
 
         player = playerManager.createPlayer();
-        scheduler = new TrackScheduler(player);
+        scheduler = new TrackScheduler(this);
         player.addListener(scheduler);
 
         audioManager.setSendingHandler(new AudioSender(player));
@@ -55,14 +55,28 @@ public class MusicPlayer {
 
     public void queue(String url) {
         playerManager.loadItem(url, new TsukiChanAudioLoadResultHandler(this, false));
+        audioManager.openAudioConnection(channel);
     }
 
-    public void playNext() {
+    /**
+     * @return true if there is another track to play.
+     */
+    public boolean playNext() {
+        if (scheduler.isQueueEmpty()) {
+            stop();
+            return false;
+        }
         scheduler.nextTrack();
+        return true;
     }
 
-    public void play(String url) {
+    public void stop() {
+        audioManager.closeAudioConnection();
+    }
+
+    public void playInstantly(String url) {
         playerManager.loadItem(url, new TsukiChanAudioLoadResultHandler(this, true));
+        audioManager.openAudioConnection(channel);
     }
 
     void trackLoaded(AudioTrack track, boolean playInstantly) {
@@ -89,7 +103,7 @@ public class MusicPlayer {
         return playerManager;
     }
 
-    public AudioPlayer getPlayer() {
+    public AudioPlayer getAudioPlayer() {
         return player;
     }
 

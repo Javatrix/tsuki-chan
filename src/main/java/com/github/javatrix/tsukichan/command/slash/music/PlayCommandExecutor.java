@@ -8,10 +8,14 @@ package com.github.javatrix.tsukichan.command.slash.music;
 
 import com.github.javatrix.tsukichan.audio.MusicPlayer;
 import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+
+import java.awt.*;
 
 public class PlayCommandExecutor implements SlashCommandExecutor {
 
@@ -26,7 +30,15 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
         String title = context.getOption(TITLE_OPTION.getName()).getAsString();
         VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
         MusicPlayer.get(channel).queue(title);
-        context.reply(title + " was added to the queue!").queue();
+        context.replyEmbeds(createEmbed(title)).queue();
+    }
+
+    private MessageEmbed createEmbed(String title) {
+        return new EmbedBuilder()
+                .setAuthor("Queued " + title, null, "https://cdn-icons-png.flaticon.com/512/7566/7566380.png")
+                .setDescription("The song was added to the queue! Use /next to play it now.")
+                .setColor(new Color(232, 1, 117, 255))
+                .build();
     }
 
 }
