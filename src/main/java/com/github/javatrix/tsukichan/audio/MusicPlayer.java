@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
@@ -54,9 +55,12 @@ public class MusicPlayer {
         return musicPlayers.get(channel);
     }
 
-    public void queue(String url) {
-        playerManager.loadItem(url, new TsukiChanAudioLoadResultHandler(this, false));
+    public CompletableFuture<AudioTrack> queue(String url) {
+        CompletableFuture<AudioTrack> future = new CompletableFuture<>();
+        TsukiChanAudioLoadResultHandler resultHandler = new TsukiChanAudioLoadResultHandler(this, false, future);
+        playerManager.loadItem(url, resultHandler);
         audioManager.openAudioConnection(channel);
+        return future;
     }
 
     /**
@@ -71,9 +75,12 @@ public class MusicPlayer {
         audioManager.closeAudioConnection();
     }
 
-    public void playInstantly(String url) {
-        playerManager.loadItem(url, new TsukiChanAudioLoadResultHandler(this, true));
+    public CompletableFuture<AudioTrack> playInstantly(String url) {
+        CompletableFuture<AudioTrack> future = new CompletableFuture<>();
+        TsukiChanAudioLoadResultHandler resultHandler = new TsukiChanAudioLoadResultHandler(this, true, future);
+        playerManager.loadItem(url, resultHandler);
         audioManager.openAudioConnection(channel);
+        return future;
     }
 
     void trackLoaded(AudioTrack track, boolean playInstantly) {

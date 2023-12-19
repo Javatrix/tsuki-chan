@@ -18,21 +18,21 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
 
 public class PlayCommandExecutor implements SlashCommandExecutor {
 
     public static final OptionData TITLE_OPTION = new OptionData(OptionType.STRING, "title", "Title of the song to play.", true);
 
     @Override
-    public void process(SlashCommandInteractionEvent context) {
+    public void process(SlashCommandInteractionEvent context) throws ExecutionException, InterruptedException {
         if (context.getMember().getVoiceState() == null || context.getMember().getVoiceState().getChannel() == null) {
             context.reply("You have to be in a voice channel to use this command.").setEphemeral(true).queue();
             return;
         }
         String title = context.getOption(TITLE_OPTION.getName()).getAsString();
         VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
-        context.replyEmbeds(createEmbed(title)).queue();
-        MusicPlayer.get(channel).queue(title);
+        context.replyEmbeds(createEmbed(MusicPlayer.get(channel).queue(title).get().getInfo().title)).queue();
     }
 
     private MessageEmbed createEmbed(String title) {
