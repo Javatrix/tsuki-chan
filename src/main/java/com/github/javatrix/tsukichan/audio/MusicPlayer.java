@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.managers.AudioManager;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
@@ -105,5 +106,9 @@ public class MusicPlayer {
 
     public TrackScheduler getScheduler() {
         return scheduler;
+    }
+
+    public Queue<AudioTrack> getQueue() {
+        return scheduler.getQueue();
     }
 }

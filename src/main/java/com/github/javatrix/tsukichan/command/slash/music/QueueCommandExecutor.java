@@ -9,19 +9,15 @@ package com.github.javatrix.tsukichan.command.slash.music;
 import com.github.javatrix.tsukichan.TsukiChan;
 import com.github.javatrix.tsukichan.audio.MusicPlayer;
 import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
-import com.github.javatrix.tsukichan.config.TsukiChanConfig;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-import java.awt.*;
+import java.util.List;
 
-public class PlayCommandExecutor implements SlashCommandExecutor {
-
-    public static final OptionData TITLE_OPTION = new OptionData(OptionType.STRING, "title", "Title of the song to play.", true);
+public class QueueCommandExecutor implements SlashCommandExecutor {
 
     @Override
     public void process(SlashCommandInteractionEvent context) {
@@ -29,18 +25,22 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
             context.reply("You have to be in a voice channel to use this command.").setEphemeral(true).queue();
             return;
         }
-        String title = context.getOption(TITLE_OPTION.getName()).getAsString();
-        VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
-        context.replyEmbeds(createEmbed(title)).queue();
-        MusicPlayer.get(channel).queue(title);
+        VoiceChannel voiceChannel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
+        AudioTrack current = MusicPlayer.get(voiceChannel).getAudioPlayer().getPlayingTrack();
+        List<AudioTrack> queue = MusicPlayer.get(voiceChannel).getQueue().stream().toList();
+        context.replyEmbeds(createEmbed(current, queue)).setEphemeral(true).queue();
     }
 
-    private MessageEmbed createEmbed(String title) {
-        return new EmbedBuilder()
-                .setAuthor("Queued " + title, null, TsukiChan.getConfig().musicIconUrl)
-                .setDescription("The song was added to the queue! Use /skip to play it now.")
+    private MessageEmbed createEmbed(AudioTrack current, List<AudioTrack> queue) {
+        EmbedBuilder embed = new EmbedBuilder().setAuthor("Songs in the queue:", null, TsukiChan.getConfig().musicIconUrl)
                 .setColor(TsukiChan.getConfig().musicMessageColor)
-                .build();
+                .addField("Currently playing", current.getInfo().title, true);
+        int i = 1;
+        for (AudioTrack track : queue) {
+            embed.addField(i + ".", track.getInfo().title, false);
+            i++;
+        }
+        return embed.build();
     }
 
 }

@@ -7,32 +7,32 @@
 package com.github.javatrix.tsukichan.event.button;
 
 import com.github.javatrix.tsukichan.TsukiChan;
-import com.github.javatrix.tsukichan.event.KawaiiSanEventListener;
+import com.github.javatrix.tsukichan.event.TsukiChanEventListener;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class KawaiiSanButtonListener extends KawaiiSanEventListener {
+public class TsukiChanButtonListener extends TsukiChanEventListener {
 
     private String buttonId;
     private final ButtonInteractionRunnable buttonInteractionRunnable;
 
-    private KawaiiSanButtonListener(String buttonId, ButtonInteractionRunnable buttonInteractionRunnable) {
+    private TsukiChanButtonListener(String buttonId, ButtonInteractionRunnable buttonInteractionRunnable) {
         super();
         this.buttonId = buttonId;
         this.buttonInteractionRunnable = buttonInteractionRunnable;
     }
 
-    private KawaiiSanButtonListener(ButtonInteractionRunnable buttonInteractionRunnable) {
+    private TsukiChanButtonListener(ButtonInteractionRunnable buttonInteractionRunnable) {
         super();
         this.buttonInteractionRunnable = buttonInteractionRunnable;
     }
 
     public static void register(String buttonId, ButtonInteractionRunnable onClick) {
-        new KawaiiSanButtonListener(buttonId, onClick);
+        new TsukiChanButtonListener(buttonId, onClick);
     }
 
     public static void register(ButtonInteractionRunnable onClick) {
-        new KawaiiSanButtonListener(onClick);
+        new TsukiChanButtonListener(onClick);
     }
 
     @Override

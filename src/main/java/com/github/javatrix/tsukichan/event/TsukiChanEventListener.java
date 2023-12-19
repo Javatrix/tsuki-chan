@@ -9,9 +9,9 @@ package com.github.javatrix.tsukichan.event;
 import com.github.javatrix.tsukichan.TsukiChan;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public abstract class KawaiiSanEventListener extends ListenerAdapter {
+public abstract class TsukiChanEventListener extends ListenerAdapter {
 
-    public KawaiiSanEventListener() {
+    public TsukiChanEventListener() {
         TsukiChan.getInstance().getApi().addEventListener(this);
     }
 

@@ -9,7 +9,7 @@ package com.github.javatrix.tsukichan.event;
 import com.github.javatrix.tsukichan.TsukiChan;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class KawaiiSanMentionEventListener extends KawaiiSanEventListener {
+public class TsukiChanMentionListener extends TsukiChanEventListener {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {

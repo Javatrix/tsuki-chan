@@ -7,9 +7,10 @@
 package com.github.javatrix.tsukichan;
 
 import com.github.javatrix.tsukichan.command.CommandManager;
+import com.github.javatrix.tsukichan.config.TsukiChanConfig;
 import com.github.javatrix.tsukichan.data.DataManager;
 import com.github.javatrix.tsukichan.data.GuildData;
-import com.github.javatrix.tsukichan.event.KawaiiSanMentionEventListener;
+import com.github.javatrix.tsukichan.event.TsukiChanMentionListener;
 import com.github.javatrix.tsukichan.user.Tempban;
 import com.github.javatrix.tsukichan.util.logging.LogType;
 import com.github.javatrix.tsukichan.util.logging.Logger;
@@ -43,6 +44,7 @@ public class TsukiChan {
     private JDA api;
     private final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(8);
     private final Map<Guild, List<Tempban>> tempbans = new HashMap<>();
+    private final TsukiChanConfig config = new TsukiChanConfig();
 
     private TsukiChan() {
     }
@@ -152,7 +154,7 @@ public class TsukiChan {
     }
 
     private void initEvents() {
-        new KawaiiSanMentionEventListener();
+        new TsukiChanMentionListener();
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 pickRandomAvatar();
@@ -190,15 +192,19 @@ public class TsukiChan {
         return version;
     }
 
-    public JDA getApi() {
-        return api;
+    public static TsukiChanConfig getConfig() {
+        return getInstance().config;
     }
 
-    public SelfUser getUser() {
-        return api.getSelfUser();
+    public static JDA getApi() {
+        return getInstance().api;
     }
 
-    public Member asMember(Guild guild) {
+    public static SelfUser getUser() {
+        return getApi().getSelfUser();
+    }
+
+    public static Member asMember(Guild guild) {
         Member member = guild.getMember(getUser());
         if (member == null) {
             throw new IllegalStateException("The bot is not present in the specified guild: " + guild);

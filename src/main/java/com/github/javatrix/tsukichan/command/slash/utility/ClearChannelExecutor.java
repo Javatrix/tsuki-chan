@@ -7,7 +7,7 @@
 package com.github.javatrix.tsukichan.command.slash.utility;
 
 import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
-import com.github.javatrix.tsukichan.event.button.KawaiiSanButtonListener;
+import com.github.javatrix.tsukichan.event.button.TsukiChanButtonListener;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -18,11 +18,11 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 public class ClearChannelExecutor implements SlashCommandExecutor {
 
     public ClearChannelExecutor() {
-        KawaiiSanButtonListener.register("clear_channel", (ButtonInteractionEvent event) -> {
+        TsukiChanButtonListener.register("clear_channel", (ButtonInteractionEvent event) -> {
             event.reply("Deleting!").setEphemeral(true).queue();
             clearChannel(event.getChannel());
         });
-        KawaiiSanButtonListener.register("abort_clear_channel", (ButtonInteractionEvent event) -> {
+        TsukiChanButtonListener.register("abort_clear_channel", (ButtonInteractionEvent event) -> {
             event.reply("Ok, aborting action.").setEphemeral(true).queue();
             event.getMessage().delete().queue();
         });
