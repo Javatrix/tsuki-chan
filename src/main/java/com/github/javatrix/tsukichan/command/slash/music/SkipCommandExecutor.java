@@ -12,8 +12,13 @@ import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 public class SkipCommandExecutor implements SlashCommandExecutor {
+
+    public static final OptionData SKIP_COUNT_OPTION = new OptionData(OptionType.INTEGER, "skip_count", "How many songs to skip.");
 
     @Override
     public void process(SlashCommandInteractionEvent context) {
@@ -21,12 +26,20 @@ public class SkipCommandExecutor implements SlashCommandExecutor {
             context.reply("You have to be in a voice channel to use this command.").setEphemeral(true).queue();
             return;
         }
-        context.replyEmbeds(createEmbed(MusicPlayer.get(context.getMember().getVoiceState().getChannel().asVoiceChannel()).playNext())).queue();
+        OptionMapping skipCountOption = context.getOption(SKIP_COUNT_OPTION.getName());
+        int skipCount = 1;
+        if (skipCountOption != null) {
+            skipCount = skipCountOption.getAsInt();
+        }
+        for (int i = 0; i < skipCount - 1; i++) {
+            MusicPlayer.get(context.getMember().getVoiceState().getChannel().asVoiceChannel()).playNext();
+        }
+        context.replyEmbeds(createEmbed(skipCount, MusicPlayer.get(context.getMember().getVoiceState().getChannel().asVoiceChannel()).playNext())).queue();
     }
 
-    private MessageEmbed createEmbed(boolean hasNext) {
+    private MessageEmbed createEmbed(int skipCount, boolean hasNext) {
         return new EmbedBuilder()
-                .setAuthor(hasNext ? "Skipped to the next song!" : "There aren't any songs in the queue. The player will stop now!", null, TsukiChan.getConfig().musicIconUrl)
+                .setAuthor(hasNext ? String.format("Skipped %d songs ahead!", skipCount) : "There aren't any songs in the queue. The player will stop now!", null, TsukiChan.getConfig().musicIconUrl)
                 .setColor(TsukiChan.getConfig().musicMessageColor)
                 .build();
     }

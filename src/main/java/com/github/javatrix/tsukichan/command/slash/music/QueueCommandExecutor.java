@@ -14,8 +14,14 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 public class QueueCommandExecutor implements SlashCommandExecutor {
 
@@ -28,10 +34,12 @@ public class QueueCommandExecutor implements SlashCommandExecutor {
         VoiceChannel voiceChannel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
         AudioTrack current = MusicPlayer.get(voiceChannel).getAudioPlayer().getPlayingTrack();
         List<AudioTrack> queue = MusicPlayer.get(voiceChannel).getQueue().stream().toList();
+        ReplyCallbackAction action = context.reply("Please wait a second while i fetch the list of queued songs! :D").setEphemeral(true);
         context.replyEmbeds(createEmbed(current, queue)).setEphemeral(true).queue();
+        action.applyEditData(MessageEditData.fromEmbeds(createEmbed(current, queue))).queue();
     }
 
-    private MessageEmbed createEmbed(AudioTrack current, List<AudioTrack> queue) {
+    private MessageEmbed createEmbed(AudioTrack current, Collection<AudioTrack> queue) {
         EmbedBuilder embed = new EmbedBuilder().setAuthor(queue.isEmpty() ? "There are no songs in the queue" : "Songs in the queue:", null, TsukiChan.getConfig().musicIconUrl)
                 .setColor(TsukiChan.getConfig().musicMessageColor)
                 .addField("Currently playing", current.getInfo().title, true);

@@ -84,7 +84,7 @@ public class MusicPlayer {
     }
 
     void trackLoaded(AudioTrack track, boolean playInstantly) {
-        if (playInstantly) {
+        if (playInstantly || scheduler.getCurrentTrack() == null) {
             player.playTrack(track);
         } else {
             scheduler.queue(track);

@@ -67,7 +67,8 @@ public class CommandManager extends ListenerAdapter {
                         ),
                 Commands.slash("play", "Plays music in a voice channel.")
                         .addOptions(PlayCommandExecutor.TITLE_OPTION),
-                Commands.slash("skip", "Skips to the next song."),
+                Commands.slash("skip", "Skips to the next song.")
+                        .addOptions(SkipCommandExecutor.SKIP_COUNT_OPTION),
                 Commands.slash("queue", "Lists all the songs in the queue.")
         ).addCommands(
                 //Context menu commands
