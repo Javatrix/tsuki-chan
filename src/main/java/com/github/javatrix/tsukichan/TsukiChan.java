@@ -153,33 +153,6 @@ public class TsukiChan {
 
     private void initEvents() {
         new TsukiChanMentionEventListener();
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                pickRandomAvatar();
-            } catch (Exception ex) {
-                LOGGER.error("Changing avatar failed: " + ex);
-            }
-        }, 5, 5, TimeUnit.MINUTES);
-    }
-
-    public void pickRandomAvatar() {
-        File avatars = new File("avatars");
-        if (!avatars.exists()) {
-            LOGGER.warning("No avatars directory, the avatars won't change.");
-            return;
-        }
-        List<File> icons = new ArrayList<>();
-        for (File f : avatars.listFiles()) {
-            if (f.getName().endsWith(".png") || f.getName().endsWith(".jpg")) {
-                icons.add(f);
-            }
-        }
-        try {
-            Icon avatar = Icon.from(icons.get((int) (Math.random() * icons.size())));
-            TsukiChan.getInstance().getUser().getManager().setAvatar(avatar).queue();
-        } catch (IOException e) {
-            LOGGER.error("Loading avatar file failed: " + e);
-        }
     }
 
     public static TsukiChan getInstance() {
