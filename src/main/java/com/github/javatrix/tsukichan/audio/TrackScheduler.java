@@ -60,6 +60,7 @@ public class TrackScheduler extends AudioEventAdapter {
         AudioTrack track = queue.poll();
         if (!player.getAudioPlayer().startTrack(track, false)) {
             LOGGER.debug("Next track is null, stopping the player.");
+            player.stop();
             return;
         }
         LOGGER.debug("Now playing " + track.getInfo().title);

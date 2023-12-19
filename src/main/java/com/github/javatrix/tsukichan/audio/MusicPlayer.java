@@ -62,10 +62,6 @@ public class MusicPlayer {
      * @return true if there is another track to play.
      */
     public boolean playNext() {
-        if (scheduler.isQueueEmpty()) {
-            stop();
-            return false;
-        }
         scheduler.nextTrack();
         return true;
     }
