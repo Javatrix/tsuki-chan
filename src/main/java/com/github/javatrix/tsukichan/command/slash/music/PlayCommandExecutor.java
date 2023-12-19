@@ -4,9 +4,10 @@
  * The project license can be seen here: https://raw.githubusercontent.com/Javatrix/tsuki-chan/main/LICENSE
  */
 
-package com.github.javatrix.tsukichan.command.slash;
+package com.github.javatrix.tsukichan.command.slash.music;
 
 import com.github.javatrix.tsukichan.audio.MusicPlayer;
+import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -22,8 +23,10 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
             context.reply("You have to be in a voice channel to use this command.").setEphemeral(true).queue();
             return;
         }
+        String title = context.getOption(TITLE_OPTION.getName()).getAsString();
         VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
-        MusicPlayer.get(channel).queue(context.getOption(TITLE_OPTION.getName()).getAsString());
+        MusicPlayer.get(channel).queue(title);
+        context.reply(title + " was added to the queue!").queue();
     }
 
 }

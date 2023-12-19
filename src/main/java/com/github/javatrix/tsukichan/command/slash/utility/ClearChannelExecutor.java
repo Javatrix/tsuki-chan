@@ -4,8 +4,9 @@
  * The project license can be seen here: https://raw.githubusercontent.com/Javatrix/tsuki-chan/main/LICENSE
  */
 
-package com.github.javatrix.tsukichan.command.slash;
+package com.github.javatrix.tsukichan.command.slash.utility;
 
+import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
 import com.github.javatrix.tsukichan.event.button.KawaiiSanButtonListener;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;

@@ -8,6 +8,12 @@ package com.github.javatrix.tsukichan.command;
 
 import com.github.javatrix.tsukichan.TsukiChan;
 import com.github.javatrix.tsukichan.command.slash.*;
+import com.github.javatrix.tsukichan.command.slash.fun.UwUCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.moderation.SelfRoleExecutor;
+import com.github.javatrix.tsukichan.command.slash.moderation.TempBanExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.NextCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.PlayCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.utility.ClearChannelExecutor;
 import com.github.javatrix.tsukichan.command.user.HugCommandExecutor;
 import com.github.javatrix.tsukichan.command.user.UserCommandExecutor;
 import net.dv8tion.jda.api.JDA;
@@ -56,8 +62,9 @@ public class CommandManager extends ListenerAdapter {
                                 TempBanExecutor.TIME_UNIT_OPTION,
                                 TempBanExecutor.REASON_OPTION
                         ),
-                Commands.slash("play", "Plays music from YouTube.")
-                        .addOptions(PlayCommandExecutor.TITLE_OPTION)
+                Commands.slash("play", "Plays music in a voice channel.")
+                        .addOptions(PlayCommandExecutor.TITLE_OPTION),
+                Commands.slash("next", "Skips to the next song.")
         ).addCommands(
                 //Context menu commands
                 Commands.user("Hug")
@@ -69,6 +76,7 @@ public class CommandManager extends ListenerAdapter {
         slashExecutors.put("clear", new ClearChannelExecutor());
         slashExecutors.put("tempban", new TempBanExecutor());
         slashExecutors.put("play", new PlayCommandExecutor());
+        slashExecutors.put("next", new NextCommandExecutor());
 
         TsukiChan.LOGGER.info("Creating context menu executors...");
         userExecutors.put("Hug", new HugCommandExecutor());

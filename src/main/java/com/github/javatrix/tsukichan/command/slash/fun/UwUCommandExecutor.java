@@ -4,8 +4,9 @@
  * The project license can be seen here: https://raw.githubusercontent.com/Javatrix/tsuki-chan/main/LICENSE
  */
 
-package com.github.javatrix.tsukichan.command.slash;
+package com.github.javatrix.tsukichan.command.slash.fun;
 
+import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;

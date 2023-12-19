@@ -58,12 +58,11 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     public void nextTrack() {
         AudioTrack track = queue.poll();
-        if (track == null) {
+        if (!player.startTrack(track, false)) {
             LOGGER.debug("Next track is null, stopping the player.");
             return;
         }
         LOGGER.debug("Now playing " + track.getInfo().title);
-        player.startTrack(queue.poll(), false);
     }
 
     @Override
