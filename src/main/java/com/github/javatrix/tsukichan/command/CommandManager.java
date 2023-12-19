@@ -57,6 +57,7 @@ public class CommandManager extends ListenerAdapter {
                                 TempBanExecutor.REASON_OPTION
                         ),
                 Commands.slash("play", "Plays music from YouTube.")
+                        .addOptions(PlayCommandExecutor.TITLE_OPTION)
         ).addCommands(
                 //Context menu commands
                 Commands.user("Hug")

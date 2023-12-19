@@ -5,15 +5,17 @@
  */
 
 package com.github.javatrix.tsukichan.audio;
+
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
-import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
 
 /**
  * This class schedules tracks for the audio player. It contains the queue of tracks.
@@ -32,8 +34,9 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
-        System.err.println(exception.getLocalizedMessage());
-        System.err.println(Arrays.toString(exception.getStackTrace()));
+        LOGGER.exception(exception);
+        LOGGER.error("Player: " + player);
+        LOGGER.error("Track: " + track);
     }
 
     /**
@@ -41,13 +44,11 @@ public class TrackScheduler extends AudioEventAdapter {
      *
      * @param track The track to play or add to queue.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void queue(AudioTrack track) {
-        // Calling startTrack with the noInterrupt set to true will start the track only if nothing is currently playing. If
-        // something is playing, it returns false and does nothing. In that case the player was already playing so this
-        // track goes to the queue instead.
-        System.out.println(track.getInfo().uri);
+        LOGGER.debug("Queueing " + track.getInfo().title);
         if (!player.startTrack(track, true)) {
-            System.out.println(track.getInfo().identifier);
+            LOGGER.debug("Track " + track.getInfo().title + " added to the queue.");
             queue.offer(track);
         }
     }
@@ -56,8 +57,12 @@ public class TrackScheduler extends AudioEventAdapter {
      * Start the next track, stopping the current one if it is playing.
      */
     public void nextTrack() {
-        // Start the next track, regardless of if something is already playing or not. In case queue was empty, we are
-        // giving null to startTrack, which is a valid argument and will simply stop the player.
+        AudioTrack track = queue.poll();
+        if (track == null) {
+            LOGGER.debug("Next track is null, stopping the player.");
+            return;
+        }
+        LOGGER.debug("Now playing " + track.getInfo().title);
         player.startTrack(queue.poll(), false);
     }
 
