@@ -32,7 +32,7 @@ public class QueueCommandExecutor implements SlashCommandExecutor {
     }
 
     private MessageEmbed createEmbed(AudioTrack current, List<AudioTrack> queue) {
-        EmbedBuilder embed = new EmbedBuilder().setAuthor("Songs in the queue:", null, TsukiChan.getConfig().musicIconUrl)
+        EmbedBuilder embed = new EmbedBuilder().setAuthor(queue.isEmpty() ? "There are no songs in the queue" : "Songs in the queue:", null, TsukiChan.getConfig().musicIconUrl)
                 .setColor(TsukiChan.getConfig().musicMessageColor)
                 .addField("Currently playing", current.getInfo().title, true);
         int i = 1;
