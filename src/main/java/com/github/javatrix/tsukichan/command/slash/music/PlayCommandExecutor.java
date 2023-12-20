@@ -9,7 +9,6 @@ package com.github.javatrix.tsukichan.command.slash.music;
 import com.github.javatrix.tsukichan.TsukiChan;
 import com.github.javatrix.tsukichan.audio.MusicPlayer;
 import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
-import com.github.javatrix.tsukichan.config.TsukiChanConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -17,7 +16,6 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
-import java.awt.*;
 import java.util.concurrent.ExecutionException;
 
 public class PlayCommandExecutor implements SlashCommandExecutor {
@@ -32,13 +30,14 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
         }
         String title = context.getOption(TITLE_OPTION.getName()).getAsString();
         VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
-        context.replyEmbeds(createEmbed(MusicPlayer.get(channel).queue("ytsearch:" + title).get().getInfo().title)).queue();
+        boolean wasPlaying = MusicPlayer.get(channel).getScheduler().getCurrentTrack() == null;
+        context.replyEmbeds(createEmbed(MusicPlayer.get(channel).queue("ytsearch:" + title).get().getInfo().title, wasPlaying)).queue();
     }
 
-    private MessageEmbed createEmbed(String title) {
+    private MessageEmbed createEmbed(String title, boolean playingNow) {
         return new EmbedBuilder()
-                .setAuthor("Queued " + title, null, TsukiChan.getConfig().musicIconUrl)
-                .setDescription("The song was added to the queue! Use /skip to play it now.")
+                .setAuthor(playingNow ? "Now playing " + title : "Queued " + title, null, TsukiChan.getConfig().musicIconUrl)
+                .setDescription(playingNow ? "Playing now!" : "The song was added to the queue! Use /skip to play it now.")
                 .setColor(TsukiChan.getConfig().musicMessageColor)
                 .build();
     }
