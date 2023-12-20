@@ -68,7 +68,7 @@ public class MusicPlayer {
     public CompletableFuture<AudioTrack> queuePlaylist(String url) {
         CompletableFuture<AudioTrack> future = new CompletableFuture<>();
         TsukiChanPlaylistLoadHandler resultHandler = new TsukiChanPlaylistLoadHandler(this, false, future);
-        playerManager.loadItem(url, resultHandler);
+        new Thread(() -> playerManager.loadItem(url, resultHandler)).start();
         audioManager.openAudioConnection(channel);
         return future;
     }

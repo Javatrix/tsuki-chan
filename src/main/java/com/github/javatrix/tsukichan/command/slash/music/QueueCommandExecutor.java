@@ -14,14 +14,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
-import net.dv8tion.jda.api.requests.restaction.interactions.ReplyCallbackAction;
-import net.dv8tion.jda.api.utils.messages.MessageEditData;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class QueueCommandExecutor implements SlashCommandExecutor {
 
@@ -45,6 +40,9 @@ public class QueueCommandExecutor implements SlashCommandExecutor {
         for (AudioTrack track : queue) {
             embed.addField(i + ".", track.getInfo().title, false);
             i++;
+            if (i >= 24) {
+                break;
+            }
         }
         return embed.build();
     }

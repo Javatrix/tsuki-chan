@@ -35,12 +35,13 @@ public class TsukiChanPlaylistLoadHandler implements AudioLoadResultHandler {
 
     @Override
     public void playlistLoaded(AudioPlaylist playlist) {
-        LOGGER.debug("Loading playlist " + playlist.getName());
+        LOGGER.debug("Loading playlist " + playlist.getName() + ".");
         boolean first = true;
         for (AudioTrack track : playlist.getTracks()) {
             player.trackLoaded(track, playInstantly && first);
             first = false;
         }
+        loadedTrack.complete(playlist.getSelectedTrack());
     }
 
     @Override

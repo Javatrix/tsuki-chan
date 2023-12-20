@@ -48,11 +48,11 @@ public class TrackScheduler extends AudioEventAdapter {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void queue(AudioTrack track) {
-        LOGGER.debug("Queueing " + track.getInfo().title);
         if (!player.getAudioPlayer().startTrack(track, true)) {
             LOGGER.debug("Track " + track.getInfo().title + " added to the queue.");
             queue.offer(track);
             if (currentTrack == null) {
+                LOGGER.debug("Current track is null, playing now.");
                 nextTrack();
             }
         }
