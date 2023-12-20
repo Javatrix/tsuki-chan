@@ -24,7 +24,7 @@ import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
 public class TrackScheduler extends AudioEventAdapter {
     private final MusicPlayer player;
     private final BlockingQueue<AudioTrack> queue;
-    private AudioTrack currentTrack;
+    AudioTrack currentTrack;
 
     /**
      * @param player The audio player this scheduler uses

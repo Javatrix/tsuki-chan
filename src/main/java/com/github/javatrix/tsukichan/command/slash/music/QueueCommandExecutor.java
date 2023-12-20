@@ -34,9 +34,7 @@ public class QueueCommandExecutor implements SlashCommandExecutor {
         VoiceChannel voiceChannel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
         AudioTrack current = MusicPlayer.get(voiceChannel).getAudioPlayer().getPlayingTrack();
         List<AudioTrack> queue = MusicPlayer.get(voiceChannel).getQueue().stream().toList();
-        ReplyCallbackAction action = context.reply("Please wait a second while i fetch the list of queued songs! :D").setEphemeral(true);
         context.replyEmbeds(createEmbed(current, queue)).setEphemeral(true).queue();
-        action.applyEditData(MessageEditData.fromEmbeds(createEmbed(current, queue))).queue();
     }
 
     private MessageEmbed createEmbed(AudioTrack current, Collection<AudioTrack> queue) {

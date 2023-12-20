@@ -10,6 +10,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -38,6 +39,7 @@ public class MusicPlayer {
 
         playerManager = new DefaultAudioPlayerManager();
         playerManager.setFrameBufferDuration((int) TimeUnit.SECONDS.toMillis(8));
+        playerManager.registerSourceManager(new YoutubeAudioSourceManager());
         AudioSourceManagers.registerRemoteSources(playerManager);
 
         player = playerManager.createPlayer();
@@ -57,7 +59,15 @@ public class MusicPlayer {
 
     public CompletableFuture<AudioTrack> queue(String url) {
         CompletableFuture<AudioTrack> future = new CompletableFuture<>();
-        TsukiChanAudioLoadResultHandler resultHandler = new TsukiChanAudioLoadResultHandler(this, false, future);
+        TsukiChanTrackLoadHandler resultHandler = new TsukiChanTrackLoadHandler(this, false, future);
+        playerManager.loadItem(url, resultHandler);
+        audioManager.openAudioConnection(channel);
+        return future;
+    }
+
+    public CompletableFuture<AudioTrack> queuePlaylist(String url) {
+        CompletableFuture<AudioTrack> future = new CompletableFuture<>();
+        TsukiChanPlaylistLoadHandler resultHandler = new TsukiChanPlaylistLoadHandler(this, false, future);
         playerManager.loadItem(url, resultHandler);
         audioManager.openAudioConnection(channel);
         return future;
@@ -68,7 +78,7 @@ public class MusicPlayer {
      */
     public boolean playNext() {
         scheduler.nextTrack();
-        return true;
+        return scheduler.currentTrack != null;
     }
 
     public void stop() {
@@ -77,7 +87,7 @@ public class MusicPlayer {
 
     public CompletableFuture<AudioTrack> playInstantly(String url) {
         CompletableFuture<AudioTrack> future = new CompletableFuture<>();
-        TsukiChanAudioLoadResultHandler resultHandler = new TsukiChanAudioLoadResultHandler(this, true, future);
+        TsukiChanTrackLoadHandler resultHandler = new TsukiChanTrackLoadHandler(this, true, future);
         playerManager.loadItem(url, resultHandler);
         audioManager.openAudioConnection(channel);
         return future;
@@ -86,6 +96,7 @@ public class MusicPlayer {
     void trackLoaded(AudioTrack track, boolean playInstantly) {
         if (playInstantly || scheduler.getCurrentTrack() == null) {
             player.playTrack(track);
+            scheduler.currentTrack = track;
         } else {
             scheduler.queue(track);
         }

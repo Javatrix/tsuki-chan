@@ -32,7 +32,7 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
         }
         String title = context.getOption(TITLE_OPTION.getName()).getAsString();
         VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
-        context.replyEmbeds(createEmbed(MusicPlayer.get(channel).queue(title).get().getInfo().title)).queue();
+        context.replyEmbeds(createEmbed(MusicPlayer.get(channel).queue("ytsearch:" + title).get().getInfo().title)).queue();
     }
 
     private MessageEmbed createEmbed(String title) {

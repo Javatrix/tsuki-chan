@@ -15,13 +15,13 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
 
-public class TsukiChanAudioLoadResultHandler implements AudioLoadResultHandler {
+public class TsukiChanPlaylistLoadHandler implements AudioLoadResultHandler {
 
     private final MusicPlayer player;
     private final boolean playInstantly;
     private final CompletableFuture<AudioTrack> loadedTrack;
 
-    public TsukiChanAudioLoadResultHandler(MusicPlayer player, boolean playInstantly, CompletableFuture<AudioTrack> loadedTrack) {
+    public TsukiChanPlaylistLoadHandler(MusicPlayer player, boolean playInstantly, CompletableFuture<AudioTrack> loadedTrack) {
         this.player = player;
         this.playInstantly = playInstantly;
         this.loadedTrack = loadedTrack;
