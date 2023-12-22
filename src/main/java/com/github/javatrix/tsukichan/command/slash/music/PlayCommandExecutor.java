@@ -9,8 +9,10 @@ package com.github.javatrix.tsukichan.command.slash.music;
 import com.github.javatrix.tsukichan.TsukiChan;
 import com.github.javatrix.tsukichan.audio.MusicPlayer;
 import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -33,11 +35,11 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
         String title = context.getOption(TITLE_OPTION.getName()).getAsString();
         VoiceChannel channel = context.getMember().getVoiceState().getChannel().asVoiceChannel();
         boolean wasPlaying = MusicPlayer.get(channel).getScheduler().getCurrentTrack() == null;
-        CompletableFuture<String> trackName = new CompletableFuture<>();
+        CompletableFuture<AudioTrackInfo> trackInfo = new CompletableFuture<>();
         new Thread(() -> {
             try {
-                String t = title.startsWith("http") ? MusicPlayer.get(channel).queuePlaylist(title).get().getInfo().title : MusicPlayer.get(channel).queue("ytsearch:" + title).get().getInfo().title;
-                trackName.complete(t);
+                AudioTrackInfo info = title.startsWith("http") ? MusicPlayer.get(channel).queuePlaylist(title).get().getInfo() : MusicPlayer.get(channel).queue("ytsearch:" + title).get().getInfo();
+                trackInfo.complete(info);
             } catch (InterruptedException | ExecutionException ignored) {
             }
         }).start();
@@ -45,16 +47,25 @@ public class PlayCommandExecutor implements SlashCommandExecutor {
         CompletableFuture<String> messageId = new CompletableFuture<>();
         if (!context.getInteraction().isAcknowledged()) {
             context.reply("Downloading the song(s) seems to take a while, please wait while I'm finishing the job!").setEphemeral(true).queue(interactionHook -> messageId.complete(interactionHook.getId()));
-            context.getMessageChannel().sendMessageEmbeds(createEmbed(trackName.get(), wasPlaying)).queue();
+            context.getMessageChannel().sendMessageEmbeds(createEmbed(trackInfo.get(), wasPlaying, context.getUser())).queue();
         }
     }
 
-    private MessageEmbed createEmbed(String title, boolean playingNow) {
+    private MessageEmbed createEmbed(AudioTrackInfo info, boolean playingNow, User sender) {
         return new EmbedBuilder()
-                .setAuthor(playingNow ? "Now playing " + title : "Queued " + title, null, TsukiChan.getConfig().musicIconUrl)
+                .setAuthor(playingNow ? "Now playing " + info.title : "Queued " + info.title, null, TsukiChan.getConfig().musicIconUrl)
+                .addField("Duration", "``" + songDuration(info.length) + "``", true)
+                .addField("Requested by", sender.getAsMention(), true)
                 .setDescription(playingNow ? "Playing now!" : "Added to the queue! Use /skip to play it now.")
                 .setColor(TsukiChan.getConfig().musicMessageColor)
+                .setThumbnail(info.artworkUrl)
                 .build();
+    }
+
+    private String songDuration(long milliseconds) {
+        long minutes = (milliseconds / 1000) / 60 % 60;
+        long seconds = (milliseconds / 1000) % 60;
+        return String.format("%02d:%02d", minutes, seconds);
     }
 
 }
