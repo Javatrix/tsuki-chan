@@ -31,6 +31,7 @@ Github repo.
 
 - Tempban for any amount of time; in seconds, minutes, hours, or days.
 - Selfrole command with buttons and custom emojis
+- Simple and easy to use music player.
 - Two-way Minecraft and Discord chat integration after installing a plugin on the server. (The plugin not accessible yet)
 - Right click to hug a user, if they have a bad day :)
 
