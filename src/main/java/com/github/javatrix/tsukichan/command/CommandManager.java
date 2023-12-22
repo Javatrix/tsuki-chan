@@ -6,13 +6,14 @@
 
 package com.github.javatrix.tsukichan.command;
 
-import com.github.javatrix.tsukichan.command.slash.*;
+import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
 import com.github.javatrix.tsukichan.command.slash.fun.UwUCommandExecutor;
 import com.github.javatrix.tsukichan.command.slash.moderation.SelfRoleExecutor;
 import com.github.javatrix.tsukichan.command.slash.moderation.TempBanExecutor;
-import com.github.javatrix.tsukichan.command.slash.music.SkipCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.PauseCommandExecutor;
 import com.github.javatrix.tsukichan.command.slash.music.PlayCommandExecutor;
 import com.github.javatrix.tsukichan.command.slash.music.QueueCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.SkipCommandExecutor;
 import com.github.javatrix.tsukichan.command.slash.utility.ClearChannelExecutor;
 import com.github.javatrix.tsukichan.command.user.HugCommandExecutor;
 import com.github.javatrix.tsukichan.command.user.UserCommandExecutor;
@@ -67,6 +68,7 @@ public class CommandManager extends ListenerAdapter {
                         ),
                 Commands.slash("play", "Plays music in a voice channel.")
                         .addOptions(PlayCommandExecutor.TITLE_OPTION),
+                Commands.slash("pause", "Pauses or resumes the paused song."),
                 Commands.slash("skip", "Skips to the next song.")
                         .addOptions(SkipCommandExecutor.SKIP_COUNT_OPTION),
                 Commands.slash("queue", "Lists all the songs in the queue.")
@@ -82,6 +84,7 @@ public class CommandManager extends ListenerAdapter {
         slashExecutors.put("tempban", new TempBanExecutor());
 
         slashExecutors.put("play", new PlayCommandExecutor());
+        slashExecutors.put("pause", new PauseCommandExecutor());
         slashExecutors.put("skip", new SkipCommandExecutor());
         slashExecutors.put("queue", new QueueCommandExecutor());
 
