@@ -7,9 +7,10 @@
 package com.github.javatrix.tsukichan;
 
 import com.github.javatrix.tsukichan.command.CommandManager;
+import com.github.javatrix.tsukichan.config.TsukiChanConfig;
 import com.github.javatrix.tsukichan.data.DataManager;
 import com.github.javatrix.tsukichan.data.GuildData;
-import com.github.javatrix.tsukichan.event.TsukiChanMentionEventListener;
+import com.github.javatrix.tsukichan.event.TsukiChanMentionListener;
 import com.github.javatrix.tsukichan.user.Tempban;
 import com.github.javatrix.tsukichan.util.logging.LogType;
 import com.github.javatrix.tsukichan.util.logging.Logger;
@@ -26,8 +27,8 @@ import net.dv8tion.jda.api.utils.TimeFormat;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +44,7 @@ public class TsukiChan {
     private JDA api;
     private final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(8);
     private final Map<Guild, List<Tempban>> tempbans = new HashMap<>();
+    private final TsukiChanConfig config = new TsukiChanConfig();
 
     private TsukiChan() {
     }
@@ -57,7 +59,7 @@ public class TsukiChan {
 
         LOGGER.info("Loading JDA.");
         api = JDABuilder.createDefault(System.getenv("TSUKI_CHAN_TOKEN"))
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .enableIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .build().awaitReady();
 
@@ -152,7 +154,34 @@ public class TsukiChan {
     }
 
     private void initEvents() {
-        new TsukiChanMentionEventListener();
+        new TsukiChanMentionListener();
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                pickRandomAvatar();
+            } catch (Exception ex) {
+                LOGGER.error("Changing avatar failed: " + ex);
+            }
+        }, 5, 5, TimeUnit.MINUTES);
+    }
+
+    public void pickRandomAvatar() {
+        File avatars = new File("avatars");
+        if (!avatars.exists()) {
+            LOGGER.warning("No avatars directory, the avatars won't change.");
+            return;
+        }
+        List<File> icons = new ArrayList<>();
+        for (File f : avatars.listFiles()) {
+            if (f.getName().endsWith(".png") || f.getName().endsWith(".jpg")) {
+                icons.add(f);
+            }
+        }
+        try {
+            Icon avatar = Icon.from(icons.get((int) (Math.random() * icons.size())));
+            TsukiChan.getInstance().getUser().getManager().setAvatar(avatar).queue();
+        } catch (IOException e) {
+            LOGGER.error("Loading avatar file failed: " + e);
+        }
     }
 
     public static TsukiChan getInstance() {
@@ -163,15 +192,19 @@ public class TsukiChan {
         return version;
     }
 
-    public JDA getApi() {
-        return api;
+    public static TsukiChanConfig getConfig() {
+        return getInstance().config;
     }
 
-    public SelfUser getUser() {
-        return api.getSelfUser();
+    public static JDA getApi() {
+        return getInstance().api;
     }
 
-    public Member asMember(Guild guild) {
+    public static SelfUser getUser() {
+        return getApi().getSelfUser();
+    }
+
+    public static Member asMember(Guild guild) {
         Member member = guild.getMember(getUser());
         if (member == null) {
             throw new IllegalStateException("The bot is not present in the specified guild: " + guild);

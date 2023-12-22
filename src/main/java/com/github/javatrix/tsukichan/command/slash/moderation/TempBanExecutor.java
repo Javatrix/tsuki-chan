@@ -4,9 +4,10 @@
  * The project license can be seen here: https://raw.githubusercontent.com/Javatrix/tsuki-chan/main/LICENSE
  */
 
-package com.github.javatrix.tsukichan.command.slash;
+package com.github.javatrix.tsukichan.command.slash.moderation;
 
 import com.github.javatrix.tsukichan.TsukiChan;
+import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
 import com.github.javatrix.tsukichan.util.MemberUtils;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;

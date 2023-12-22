@@ -6,10 +6,19 @@
 
 package com.github.javatrix.tsukichan.command;
 
-import com.github.javatrix.tsukichan.TsukiChan;
-import com.github.javatrix.tsukichan.command.slash.*;
+import com.github.javatrix.tsukichan.command.slash.HelpCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.SlashCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.fun.UwUCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.moderation.SelfRoleExecutor;
+import com.github.javatrix.tsukichan.command.slash.moderation.TempBanExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.PauseCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.PlayCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.QueueCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.music.SkipCommandExecutor;
+import com.github.javatrix.tsukichan.command.slash.utility.ClearChannelExecutor;
 import com.github.javatrix.tsukichan.command.user.HugCommandExecutor;
 import com.github.javatrix.tsukichan.command.user.UserCommandExecutor;
+import com.github.javatrix.tsukichan.exception.command.CommandExecutionException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -24,6 +33,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.github.javatrix.tsukichan.TsukiChan.LOGGER;
 
 public class CommandManager extends ListenerAdapter {
 
@@ -56,20 +67,31 @@ public class CommandManager extends ListenerAdapter {
                                 TempBanExecutor.TIME_OPTION,
                                 TempBanExecutor.TIME_UNIT_OPTION,
                                 TempBanExecutor.REASON_OPTION
-                        )
+                        ),
+                Commands.slash("play", "Plays music in a voice channel.")
+                        .addOptions(PlayCommandExecutor.TITLE_OPTION),
+                Commands.slash("pause", "Pauses or resumes the paused song."),
+                Commands.slash("skip", "Skips to the next song.")
+                        .addOptions(SkipCommandExecutor.SKIP_COUNT_OPTION),
+                Commands.slash("queue", "Lists all the songs in the queue.")
         ).addCommands(
                 //Context menu commands
                 Commands.user("Hug")
         ).queue();
 
-        TsukiChan.LOGGER.info("Creating slash executors...");
+        LOGGER.info("Creating slash executors...");
         slashExecutors.put("help", new HelpCommandExecutor());
         slashExecutors.put("uwu", new UwUCommandExecutor());
         slashExecutors.put("selfrole", new SelfRoleExecutor());
         slashExecutors.put("clear", new ClearChannelExecutor());
         slashExecutors.put("tempban", new TempBanExecutor());
 
-        TsukiChan.LOGGER.info("Creating context menu executors...");
+        slashExecutors.put("play", new PlayCommandExecutor());
+        slashExecutors.put("pause", new PauseCommandExecutor());
+        slashExecutors.put("skip", new SkipCommandExecutor());
+        slashExecutors.put("queue", new QueueCommandExecutor());
+
+        LOGGER.info("Creating context menu executors...");
         userExecutors.put("Hug", new HugCommandExecutor());
 
         api.addEventListener(this);
@@ -77,14 +99,18 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        TsukiChan.LOGGER.debug("Slash command: " + event.getInteraction().getFullCommandName() + " " + event.getInteraction().getOptions());
+        LOGGER.debug("Slash command: " + event.getInteraction().getFullCommandName() + " " + event.getInteraction().getOptions());
         SlashCommandExecutor executor = slashExecutors.get(event.getName());
         if (executor == null) {
             event.reply("Sorry, it seems like the handler responsible for processing this command is not registered.Please report this issue to devs as soon as possible.").queue();
             return;
         }
 
-        executor.process(event);
+        try {
+            executor.process(event);
+        } catch (Exception e) {
+            LOGGER.exception(new CommandExecutionException(event, executor, e));
+        }
     }
 
     @Override

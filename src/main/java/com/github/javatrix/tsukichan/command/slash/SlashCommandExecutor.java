@@ -8,8 +8,10 @@ package com.github.javatrix.tsukichan.command.slash;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 
+import java.util.concurrent.ExecutionException;
+
 public interface SlashCommandExecutor {
 
-    void process(SlashCommandInteractionEvent context);
+    void process(SlashCommandInteractionEvent context) throws Exception;
 
 }

@@ -24,11 +24,14 @@ fan arts in the future.
 # Licensing
 This project is published under the [GNU General Public License](https://github.com/Javatrix/tsuki-chan/blob/main/LICENSE).
 You can use code from this project as long as you disclose the source of your work. For more details, view LICENSE.
+Tsuki-Chan also uses [Lava Player](https://github.com/sedmelluq/lavaplayer). The license of theirs is public on their
+Github repo.
 
 # Features
 
 - Tempban for any amount of time; in seconds, minutes, hours, or days.
 - Selfrole command with buttons and custom emojis
+- Simple and easy to use music player.
 - Two-way Minecraft and Discord chat integration after installing a plugin on the server. (The plugin not accessible yet)
 - Right click to hug a user, if they have a bad day :)
 

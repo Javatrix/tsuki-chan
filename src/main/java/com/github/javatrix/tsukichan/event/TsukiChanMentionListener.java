@@ -9,11 +9,11 @@ package com.github.javatrix.tsukichan.event;
 import com.github.javatrix.tsukichan.TsukiChan;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class TsukiChanMentionEventListener extends TsukiChanEventListener {
+public class TsukiChanMentionListener extends TsukiChanEventListener {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getMessage().getContentRaw().contains(TsukiChan.getInstance().getUser().getAsMention())) {
+        if (event.getMessage().getContentRaw().contains(TsukiChan.getUser().getAsMention())) {
             event.getMessage().reply("UwU").queue();
         }
     }
