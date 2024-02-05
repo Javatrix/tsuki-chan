@@ -39,8 +39,7 @@ Github repo.
 
 - Web UI
 - AI chat with custom personalities
-- Music player
-- And much more things I can't even think of right now :) Keep your fingers crossed for me!
+- And much more things I can't even think of right now :) Wish me luck!
 
 # Building
 
