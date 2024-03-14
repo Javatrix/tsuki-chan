@@ -1,0 +1,14 @@
+repo=tsuki-chan
+echo Checking for a JAR file...
+
+if [ -d "~/Tsuki-Chan/$repo/build/libs" ]; then
+	echo JAR file already built, quitting.
+	exit 0
+fi
+
+cd ~/Tsuki-Chan/$repo
+echo JAR file not found, building!
+./gradlew shadowJar
+echo JAR file built.
+exit 0
+

@@ -1,0 +1,4 @@
+cd ~/Tsuki-Chan
+./update
+./build
+./run

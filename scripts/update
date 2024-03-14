@@ -1,0 +1,29 @@
+repo=tsuki-chan
+
+cd ~/Tsuki-Chan
+echo Trying to clone in order to prevent processes from failing.
+
+git clone https://github.com/Javatrix/$repo
+
+cd ~/Tsuki-Chan/$repo
+
+echo Calculating main branch commit count...
+commit_count=$(git rev-list --count main)
+
+cd ..
+
+echo Checking for updates...
+new_commit_count=$(./ccount javatrix $repo)
+
+if [ "$commit_count" == "$new_commit_count" ]; then
+	echo No updates found, quitting!
+	exit 1
+fi
+
+echo Update found, deleting outdated files...
+rm -rf ./$repo
+echo Deleted.
+
+echo Copying update files...
+git clone https://github.com/Javatrix/$repo
+echo Updating done.
